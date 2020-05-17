@@ -78,14 +78,18 @@ task makeBuild() {
     String newVersion = majorVersion + "." + mediumVersion + "." + minorVersion
     versionApp = prefix + newVersion
     logger.info("Preparing the fat jar with the version '{}'", versionApp)
+    dependsOn(":commons-lib:build")
+    dependsOn(":passwords-app:build")
     dependsOn("uberJar")
     doLast {
-        logger.info("Updating file '{}'...", setupFileName)
-        File propsFile = new File(setupFileName)
-        props.setProperty("release.recent", newVersion)
-        props.setProperty("release.flag", "false")
-        props.setProperty("release.next.change.type", "none")
-        props.store(propsFile.newWriter(), null)
+        if (!file.exists() || "true".equals(props.getProperty("release.flag").toString())) {
+            logger.info("Updating file '{}'...", setupFileName)
+            File propsFile = new File(setupFileName)
+            props.setProperty("release.recent", newVersion)
+            props.setProperty("release.flag", "false")
+            props.setProperty("release.next.change.type", "none")
+            props.store(propsFile.newWriter(), null)
+        }
     }
 }
 
@@ -99,7 +103,7 @@ task uberJar(type: Jar) {
     }
     manifest {
         attributes(
-                'Main-Class': 'passwords.App',
+                'Main-Class': 'passwords.Launcher',
                 'Manifest-Version': versionApp
         )
     }

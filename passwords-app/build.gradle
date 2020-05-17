@@ -21,6 +21,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":commons-lib"))
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:28.0-jre'
 
@@ -30,5 +31,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'passwords.App'
+    mainClassName = 'passwords.Launcher'
 }
