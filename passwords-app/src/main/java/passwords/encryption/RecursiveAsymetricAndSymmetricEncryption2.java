@@ -22,6 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
@@ -108,10 +109,10 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
 
         Collections.reverse(privateKeys);
         final PrivateKeyHandler privateKeyHandler = new PrivateKeyHandler();
-        logger.info("Decryption asymmetric = {} and {} private keys", new String(allEncryptedFile, Charset.forName("UTF-8")), privateKeys.size());
+        logger.info("Decryption asymmetric = {} and {} private keys", new String(allEncryptedFile, StandardCharsets.UTF_8), privateKeys.size());
         final BufferedInputStream bufferedInputStream = privateKeyHandler.recursiveProcessor(privateKeys, AsymmetricKeyHandler.toBufferedInputStream(allEncryptedFile));
         final byte[] bytesProcessed = bufferedInputStream.readAllBytes();
-        logger.info("Building data with {}", new String(bytesProcessed, Charset.forName("UTF-8")));
+        logger.info("Building data with {}", new String(bytesProcessed, StandardCharsets.UTF_8));
         final String separator = InputParameters.FILE_DATUM_SEPARATOR.getPropertyString();
         final StructuredFile load = StructuredFile.load(bytesProcessed, separator, CredentialDatum.NBR_FIELDS);
         logger.info("File loaded with {} lines and {} bytes", load.getFileData().size(), bytesProcessed.length);

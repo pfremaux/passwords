@@ -24,9 +24,9 @@ public class ChooseNumberCommandLine {
             List<String> strPwds = new ArrayList<>();
             List<Integer> numbersAuth = new ArrayList<>();
             console.printf("How many passwords ?\n");
-            int numberAuth = 0;
-            while (numberAuth <= 0) {
-                console.printf("Please enter a positive value. (> 0)\n");
+            int numberAuth = -1;
+            while (numberAuth < 0) {
+                console.printf("Please enter a positive value. (>= 0)\n");
                 numberAuth = readInt(console);
             }
             // TODO choisir entre les 2 methodes car on a un legacy

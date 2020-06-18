@@ -46,6 +46,7 @@ task makeBuild() {
     def mediumVersion = 0
     def minorVersion = 0
     def prefix = 'SNAPSHOT-'
+    def isDevBuild = project.hasProperty("dev") // test with -Pdev
     def props = new Properties()
     String setupFileName = "build-setup.properties"
     logger.info("loading setup file {}", setupFileName)
@@ -70,7 +71,7 @@ task makeBuild() {
             majorVersion = Integer.parseInt(v[0])
             mediumVersion = Integer.parseInt(v[1])
             minorVersion = Integer.parseInt(v[2]) + 1
-        } else if ("none".equals(changeType)) {
+        } else if (!isDevBuild && "none".equals(changeType)) {
             logger.error("release.next.change.type is 'none' please set it to fix/feature/major, exiting...")
             return
         }
@@ -78,23 +79,19 @@ task makeBuild() {
     String newVersion = majorVersion + "." + mediumVersion + "." + minorVersion
     versionApp = prefix + newVersion
     logger.info("Preparing the fat jar with the version '{}'", versionApp)
-    dependsOn(":commons-lib:build")
-    dependsOn(":passwords-app:build")
     dependsOn("uberJar")
-    doLast {
-        if (!file.exists() || "true".equals(props.getProperty("release.flag").toString())) {
-            logger.info("Updating file '{}'...", setupFileName)
-            File propsFile = new File(setupFileName)
-            props.setProperty("release.recent", newVersion)
-            props.setProperty("release.flag", "false")
-            props.setProperty("release.next.change.type", "none")
-            props.store(propsFile.newWriter(), null)
-        }
+    if (!isDevBuild) doLast {
+        logger.info("Updating file '{}'...", setupFileName)
+        File propsFile = new File(setupFileName)
+        props.setProperty("release.recent", newVersion)
+        props.setProperty("release.flag", "false")
+        props.setProperty("release.next.change.type", "none")
+        props.store(propsFile.newWriter(), null)
     }
 }
 
 task uberJar(type: Jar) {
-    archiveClassifier = versionApp
+    archiveClassifier = project.hasProperty("dev") ? "dev" : versionApp
     from {
         configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }
                 .collect {
