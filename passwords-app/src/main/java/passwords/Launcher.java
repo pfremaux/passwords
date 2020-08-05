@@ -60,7 +60,7 @@ public final class Launcher {
             for (Expectation expectation : expectationsCli) {
                 expectation.resolve();
             }
-            manageCommandLine(encryptionServiceFactory);
+            commandLineInteraction(encryptionServiceFactory);
         } else {
             final DebugWindow debugWindow = new DebugWindow();
             debugWindow.setVisible(true);
@@ -75,7 +75,7 @@ public final class Launcher {
         final CredentialsSettings credentialsSettings;
         try {
             credentialsSettings = future.get();
-            final List<CredentialDatum> allCredentials = manageFilesEncryptions(encryptionServiceFactory, credentialsSettings, uiMessages);
+            final List<CredentialDatum> allCredentials = decipher(encryptionServiceFactory, credentialsSettings, uiMessages);
             manageAccountsCredentials(debugWindow, encryptionServiceFactory, credentialsSettings, allCredentials, uiMessages);
             debugWindow.dispose();
         } catch (UnrecoverableException e) {
@@ -94,14 +94,14 @@ public final class Launcher {
     }
 
     // TODO move another class or use the new class created in the lib
-    private static void manageCommandLine(EncryptionFactory encryptionFactory) {
+    private static void commandLineInteraction(EncryptionFactory encryptionFactory) {
         final ChooseNumberCommandLine chooseNumberCommandLine = new ChooseNumberCommandLine();
         final Optional<CredentialsSettings> credentialsSettings = chooseNumberCommandLine.readAndGetCredentialsSettings();
         if (credentialsSettings.isEmpty()) {
             logger.error("No credential settings loaded. Can't continue.");
             System.exit(-3);
         }
-        final List<CredentialDatum> credentialData = manageFilesEncryptions(encryptionFactory, credentialsSettings.get(), null);
+        final List<CredentialDatum> credentialData = decipher(encryptionFactory, credentialsSettings.get(), null);
         final Console console = System.console();
         Node<CredentialDatum> nodes = new Node<>("Root", null, new ArrayList<>());
         CredentialsTreeDialog.credentialDataToNodes(credentialData, nodes);
@@ -253,15 +253,15 @@ public final class Launcher {
         }
     }
 
-    private static List<CredentialDatum> manageFilesEncryptions(EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, ResourceBundle uiMessages) {
+    private static List<CredentialDatum> decipher(EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, ResourceBundle uiMessages) {
         final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
         final Path fullPathSaveFile = fullPathSaveDir.resolve(InputParameters.ENCRYPTED_FILENAME.getPropertyPath());
         final List<CredentialDatum> allCredentials;
         if (FileUtils.isFileExist(fullPathSaveFile)) {
             logger.debug("Getting the Decryptor version {}", InputParameters.DECRYPT_VERSION.getPropertyInt());
-            final EncryptionService service = encryptionFactory.getService(InputParameters.DECRYPT_VERSION.getPropertyInt());
-            logger.debug("EncryptionService found : {}", service);
-            allCredentials = service.decrypt(fullPathSaveDir, securitySettings);
+            final EncryptionService encryptionService = encryptionFactory.getService(InputParameters.DECRYPT_VERSION.getPropertyInt());
+            logger.debug("EncryptionService found : {}", encryptionService);
+            allCredentials = encryptionService.decrypt(fullPathSaveDir, securitySettings);
         } else {
             logger.debug("No encrypted file found at {}", fullPathSaveFile.toAbsolutePath().toString());
             logger.info("No encrypted file found.");
@@ -274,12 +274,12 @@ public final class Launcher {
         final CredentialsTreeDialog credentialsTreeDialog = new CredentialsTreeDialog(debugWindow, encryptionFactory, allCredentials, securitySettings, uiMessages);
         final int listeningPort = InputParameters.LISTENING_PORT.getPropertyInt();
         if (listeningPort != 0) {
-            Map<Integer, Function<List<String>, Wrapper>> wrappers = new HashMap<>();
+            final Map<Integer, Function<List<String>, Wrapper>> wrappers = new HashMap<>();
             wrappers.put(GetCredential.CODE, strings -> new Wrapper(GetCredential.CODE, new GetCredential(strings)));
-            WrapperFactory wrapperFactory = new WrapperFactory(wrappers);
-            MessageConsumerManager messageConsumerManager = new MessageConsumerManager();
+            final WrapperFactory wrapperFactory = new WrapperFactory(wrappers);
+            final MessageConsumerManager messageConsumerManager = new MessageConsumerManager();
             messageConsumerManager.register(GetCredential.CODE, new GetCredentialConsumer(allCredentials));
-            Server server = new Server("localhost", listeningPort, 1, messageConsumerManager, wrapperFactory);
+            final Server server = new Server("localhost", listeningPort, 1, messageConsumerManager, wrapperFactory);
             try {
                 server.listen();
             } catch (IOException e) {

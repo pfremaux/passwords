@@ -100,11 +100,7 @@ public class CredentialsTreeDialog extends Dialog {
                 final Button addLvlBtn = positioner.getComponentByName(ADD_LEVEL_BTN_NAME, Button.class);
                 addLvlBtn.setVisible(true);
                 final Button addNodeBtn = positioner.getComponentByName(ADD_NODE_BTN_NAME, Button.class);
-                if (node.getParent() == null) {
-                    addNodeBtn.setVisible(false);
-                } else {
-                    addNodeBtn.setVisible(true);
-                }
+                addNodeBtn.setVisible(node.getParent() != null);
             }
             final Button copyPassword = positioner.getComponentByName(COPY_PASSWORD_ELEMENT_NAME, Button.class);
             copyPassword.setVisible(node.isLeaf());
