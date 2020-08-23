@@ -1,0 +1,36 @@
+package passwords.encryption;
+
+import commons.lib.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import passwords.Launcher;
+import passwords.pojo.CredentialDatum;
+import passwords.settings.CredentialsSettings;
+import passwords.settings.InputParameters;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+public class FileAccess {
+    private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
+    // TODO move
+    public static List<CredentialDatum> decipher(EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, ResourceBundle uiMessages) {
+        final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
+        final Path fullPathSaveFile = fullPathSaveDir.resolve(InputParameters.ENCRYPTED_FILENAME.getPropertyPath());
+        final List<CredentialDatum> allCredentials;
+        if (FileUtils.isFileExist(fullPathSaveFile)) {
+            logger.debug("Getting the Decryptor version {}", InputParameters.DECRYPT_VERSION.getPropertyInt());
+            final EncryptionService encryptionService = encryptionFactory.getService(InputParameters.DECRYPT_VERSION.getPropertyInt());
+            logger.debug("EncryptionService found : {}", encryptionService);
+            allCredentials = encryptionService.decrypt(fullPathSaveDir, securitySettings);
+        } else {
+            logger.debug("No encrypted file found at {}", fullPathSaveFile.toAbsolutePath().toString());
+            logger.info("No encrypted file found.");
+            allCredentials = new ArrayList<>();
+        }
+        return allCredentials;
+    }
+
+}

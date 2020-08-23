@@ -72,54 +72,11 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
                 }
             }
 
-            // TODO PFR just for debug
-            try {
-                TODOPFRJustForDebug(data, credentialsSettings);
-            } catch (BadPaddingException | IllegalBlockSizeException e) {
-                e.printStackTrace();
-            }
-
             Path saveFileFullPath = savePath.resolve(InputParameters.ENCRYPTED_FILENAME.getPropertyPath());
             logger.info("Saving file " + saveFileFullPath.toFile().getAbsolutePath());
             Files.write(saveFileFullPath, data);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | IOException e) {
             throw new UnrecoverableException(e.getMessage(), e.getMessage(), e, -2);
-        }
-    }
-
-    private void TODOPFRJustForDebug(byte[] data, CredentialsSettings credentialsSettings) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IOException, BadPaddingException, IllegalBlockSizeException {
-        final List<String> passwords = new ArrayList<>(credentialsSettings.getPasswords());
-        Collections.reverse(passwords);
-        byte[] allEncryptedFile = data;
-        int counter = 0;
-        for (String password : passwords) {
-            String wellSizedPassword = SymmetricHandler.fillPassword(password);
-            logger.debug("Decrypting with password n." + counter);
-            counter++;
-            final SecretKeySpec aes = SymmetricHandler.getSecretKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
-            allEncryptedFile = SymmetricHandler.decrypt(aes, allEncryptedFile, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
-        }
-
-        final LinkedList<PrivateKey> privateKeys = new LinkedList<>();
-        for (Integer number : credentialsSettings.getNumbers()) {
-            logger.info("Getting private key " + number);
-            PrivateKey privateKey = credentialsSettings.getPrivateKeys().get(number);
-            privateKeys.add(privateKey);
-        }
-
-        Collections.reverse(privateKeys);
-        final PrivateKeyHandler privateKeyHandler = new PrivateKeyHandler();
-        logger.info("Decryption asymmetric = {} and {} private keys", new String(allEncryptedFile, StandardCharsets.UTF_8), privateKeys.size());
-        final BufferedInputStream bufferedInputStream = privateKeyHandler.recursiveProcessor(privateKeys, AsymmetricKeyHandler.toBufferedInputStream(allEncryptedFile));
-        final byte[] bytesProcessed = bufferedInputStream.readAllBytes();
-        logger.info("Building data with {}", new String(bytesProcessed, StandardCharsets.UTF_8));
-        final String separator = InputParameters.FILE_DATUM_SEPARATOR.getPropertyString();
-        final StructuredFile load = StructuredFile.load(bytesProcessed, separator, CredentialDatum.NBR_FIELDS);
-        logger.info("File loaded with {} lines and {} bytes", load.getFileData().size(), bytesProcessed.length);
-        List<CredentialDatum> decrypt = StructuredFileHelper.getCredentialData(load);
-        logger.info("(debug)lines = {} ", decrypt.size());
-        for (CredentialDatum credentialDatum : decrypt) {
-            logger.info("(debug)url = {}", credentialDatum.getUrl());
         }
     }
 
@@ -175,7 +132,4 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
         return result;
     }
 
-    private static String toHex(byte b) {
-        return String.format("%02X", b);
-    }
 }

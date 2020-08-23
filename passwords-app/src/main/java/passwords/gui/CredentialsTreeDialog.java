@@ -2,6 +2,8 @@ package passwords.gui;
 
 import commons.lib.gui.AskDialog;
 import commons.lib.gui.Positioner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import passwords.encryption.EncryptionFactory;
 import passwords.encryption.EncryptionService;
 import passwords.expectation.Expectation;
@@ -10,8 +12,6 @@ import passwords.pojo.CredentialDatum;
 import passwords.pojo.Node;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -175,17 +175,23 @@ public class CredentialsTreeDialog extends Dialog {
         comment.setName(COMMENT_ELEMENT_NAME);
         // Create the "save credential" button.
         final Button saveInTreeButton = positioner.addButton(uiMessages.getString("btn.save.credential"), 200, DEFAULT_BUTTON_HEIGHT, e -> {
+            logger.info("Saving the credential in the tree...");
             // When the button is clicked
-            final Node<CredentialDatum> credentialDatumNode = getTypedUserObject(selectedItem);
+            final Node<CredentialDatum> selectedCredentialDatumNode = getTypedUserObject(selectedItem);
             final CredentialDatum credentialDatum = new CredentialDatum("",
                     url.getText(),
                     login.getText(),
                     password.getText(),
                     comment.getText());
-            if (credentialDatumNode.isLeaf()) {
-                credentialDatumNode.replaceLeaf(credentialDatum);
+            if (selectedCredentialDatumNode.isLeaf()) {
+                logger.info("The selected element is a leaf. Replacing its value by {}. [selectedElementName={}, selectedElementValues={}]",
+                        credentialDatum,
+                        selectedCredentialDatumNode.getName(),
+                        selectedCredentialDatumNode.getValue());
+                selectedCredentialDatumNode.replaceLeaf(credentialDatum);
             } else {
-                Node<CredentialDatum> orCreate = credentialDatumNode.getOrCreate(credentialDatum.getDisplayableInfo(), credentialDatum);
+                logger.info("Selected Item is not a leaf. [selectedItem={}]", selectedItem.getUserObject());
+                Node<CredentialDatum> orCreate = selectedCredentialDatumNode.getOrCreate(selectedItem.getUserObject().toString(), credentialDatum);
                 removeEmptyLeaf(selectedItem);
                 final DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(orCreate, false);
                 selectedItem.add(newChild);
@@ -223,13 +229,15 @@ public class CredentialsTreeDialog extends Dialog {
             Node<CredentialDatum> currentNode = rootNode;
             while (hierarchyLevelNames.hasMoreElements()) {
                 final String hierarchyLevelName = hierarchyLevelNames.nextToken().trim();
-                // The parameter is null because it's not a leaf but a directory
-                currentNode = currentNode.getOrCreate(hierarchyLevelName, null);
+                if (hierarchyLevelNames.hasMoreTokens()) {
+                    // The parameter is null because it's not a leaf but a directory
+                    currentNode = currentNode.getOrCreate(hierarchyLevelName, null);
+                }
             }
             final Node<CredentialDatum> credentialDatumNode = new Node<>(credentialDatum.getDisplayableInfo(),
                     credentialDatum,
                     new ArrayList<>());
-            currentNode.getSubValues().add(credentialDatumNode);
+            currentNode.getSubValues().add(credentialDatumNode);// TODO just subvalue is updated, not mappedvalue
         }
     }
 
@@ -259,7 +267,7 @@ public class CredentialsTreeDialog extends Dialog {
     private Map<String, CredentialDatum> getCredentialsUpToDate() {
         final DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTree.getModel().getRoot();
         Node<CredentialDatum> rootNode = getTypedUserObject(root);
-        Map<String, CredentialDatum> children = rootNode.getChildren("");
+        Map<String, CredentialDatum> children = rootNode.getChildrenV2("");
         for (Map.Entry<String, CredentialDatum> entry : children.entrySet()) {
             entry.setValue(entry.getValue().move(entry.getKey()));
         }

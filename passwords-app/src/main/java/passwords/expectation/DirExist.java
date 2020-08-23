@@ -45,8 +45,4 @@ public class DirExist implements Expectation {
         return false;
     }
 
-    @Override
-    public void repair() {
-
-    }
 }

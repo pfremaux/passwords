@@ -1,5 +1,8 @@
 package passwords.pojo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Node<T> {
+
+    private static final Logger logger = LoggerFactory.getLogger(Node.class);
 
     public static final String EMPTY = ".";
 
@@ -49,12 +54,16 @@ public class Node<T> {
         return subValues;
     }
 
-    public Node<T> getOrCreate(String hierarchyLevelName, T nodeValue) {
-        final Node<T> tNode = valuesMapped.get(hierarchyLevelName);
+    public Node<T> getOrCreate(String currentHierarchyLevelName, T nodeValue) {
+        logger.info("getOrCreate({}, {})", currentHierarchyLevelName, nodeValue);
+        Node<T> tNode = null;
+        tNode = valuesMapped.get(currentHierarchyLevelName);
         if (tNode == null) {
-            Node<T> tNode1 = new Node<T>(this, hierarchyLevelName, nodeValue, new ArrayList<>());
+            logger.info("Adding a new child node to {}. Consequently its hierarchy is {} and value is {}", name, currentHierarchyLevelName, nodeValue);
+            Node<T> tNode1 = new Node<T>(this, currentHierarchyLevelName, nodeValue, new ArrayList<>());
             subValues.add(tNode1);
-            valuesMapped.put(hierarchyLevelName, tNode1);
+            valuesMapped.put(currentHierarchyLevelName, tNode1);
+            logger.info("Map of childen has {} chidren.", valuesMapped.size());
             return tNode1;
         } else {
             return tNode;
@@ -75,13 +84,26 @@ public class Node<T> {
         return this.value != null;
     }
 
-    public Map<String, T> getChildren(String parent) {
+    public Map<String, T> getChildrenV2(String parent) {
         final Map<String, T> map = new HashMap<>();
         for (Node<T> subValue : this.getSubValues()) {
             if (subValue.isLeaf()) {
-                map.put(parent, subValue.getValue());
+                map.put(parent + " > " + subValue.getValue(), subValue.getValue());
             } else {
-                map.putAll(subValue.getChildren(parent + ">" + subValue.getName()));
+                map.putAll(subValue.getChildrenV2(parent + ">" + subValue.getName()));
+            }
+        }
+        return map;
+    }
+
+    @Deprecated
+    public Map<String, List<T>> getChildrenV1(String parent) {
+        final Map<String,  List<T>> map = new HashMap<>();
+        for (Node<T> subValue : this.getSubValues()) {
+            if (subValue.isLeaf()) {
+                map.computeIfAbsent(parent, k -> new ArrayList<>()).add(subValue.getValue());
+            } else {
+                map.putAll(subValue.getChildrenV1(parent + ">" + subValue.getName()));
             }
         }
         return map;

@@ -31,7 +31,7 @@ public interface Expectation {
                 throw new UnrecoverableException(
                         this.getClass().getCanonicalName() + " can't perform action.",
                         new String[]{"Can't continue th process."},
-                        -20);
+                        UnrecoverableException.SYSTEM_ERROR);
             }
         }
     }
@@ -53,10 +53,6 @@ public interface Expectation {
                 throw new UnrecoverableException("", new String[]{"The commons.lib.privacy.pwdstore crashed."}, e, -11);
             }
         }
-    }
-
-    default void repair() {
-        throw new UnsupportedOperationException("This method is not implemented. " + this.getClass().getName());
     }
 
 }
