@@ -55,7 +55,7 @@ public enum InputParameters {
     }
 
     public static String toPropertiesFileFormat() {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         for (InputParameters inputParameter : values()) {
             String keyName = inputParameter.key;
             String value = getPropertyString(inputParameter);
@@ -68,7 +68,7 @@ public enum InputParameters {
     }
 
     public static String toCommandLineFormat() {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         for (InputParameters inputParameter : values()) {
             String keyName = inputParameter.commandLineKey;
             if (keyName == null) {
