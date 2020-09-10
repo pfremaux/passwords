@@ -17,7 +17,8 @@ public enum InputParameters {
     COMMAND_LINE_MODE("mode.cli", "false", "--cli"),
     LISTENING_PORT("server.listening.port", "0", "--lp"),
     DISTANT_SERVER_HOSTNAME("server.distant.hostname", "", "--sh"),
-    DISTANT_SERVER_PORT("server.distant.port", "0", "--sp");
+    DISTANT_SERVER_PORT("server.distant.port", "0", "--sp"),
+    CONSOLE_INPUT("console.input", "not set", "--con");
 
     String key;
     String defaultValue;

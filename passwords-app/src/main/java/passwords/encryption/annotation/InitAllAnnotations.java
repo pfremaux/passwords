@@ -1,5 +1,6 @@
 package passwords.encryption.annotation;
 
+import commons.lib.SystemUtils;
 import commons.lib.UnrecoverableException;
 import passwords.encryption.EncryptionFactory;
 import passwords.encryption.EncryptionService;
@@ -41,7 +42,7 @@ public final class InitAllAnnotations {
                     errorMsg,
                     new String[]{"A error due to a programmer's mistake forced the application to stop"},
                     e,
-                    -10);
+                    SystemUtils.EXIT_PROGRAMMER_ERROR);
         }
         encryptionFactory = new EncryptionFactory(encryptionServiceRegistry);
     }

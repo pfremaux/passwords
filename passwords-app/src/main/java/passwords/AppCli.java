@@ -1,5 +1,10 @@
 package passwords;
 
+import commons.lib.SystemUtils;
+import commons.lib.console.ConsoleFactory;
+import commons.lib.console.CustomConsole;
+import commons.lib.console.v2.item.Crud;
+import commons.lib.console.v2.item.DescriptibleConsoleItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.commandline.ActionChoice;
@@ -9,11 +14,12 @@ import passwords.encryption.EncryptionService;
 import passwords.encryption.FileAccess;
 import passwords.gui.CredentialsTreeDialog;
 import passwords.pojo.CredentialDatum;
+import passwords.pojo.CredentialDatumDirForConsole;
+import passwords.pojo.CredentialDatumForConsole;
 import passwords.pojo.Node;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
 
-import java.io.Console;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,10 +34,12 @@ public class AppCli {
         final Optional<CredentialsSettings> credentialsSettings = chooseNumberCommandLine.readAndGetCredentialsSettings();
         if (credentialsSettings.isEmpty()) {
             logger.error("No credential settings loaded. Can't continue.");
-            System.exit(-3);
+            SystemUtils.failUSer();
         }
         final List<CredentialDatum> credentialData = FileAccess.decipher(encryptionFactory, credentialsSettings.get(), null);
-        final Console console = System.console();
+
+        final CustomConsole customConsole = ConsoleFactory.getInstance(true, InputParameters.CONSOLE_INPUT.getPropertyPath());
+
         Node<CredentialDatum> nodes = new Node<>("Root", null, new ArrayList<>());
         CredentialsTreeDialog.credentialDataToNodes(credentialData, nodes);
         int i = 0;
@@ -39,41 +47,40 @@ public class AppCli {
         final Set<Integer> allowedChoices = Stream.of(ActionChoice.values()).map(ActionChoice::getChoice).collect(Collectors.toSet());
         while (true) {
             while (!allowedChoices.contains(i)) {
-                console.printf("What now ?\n");
+                customConsole.printf("What now ?");
                 for (ActionChoice value : ActionChoice.values()) {
-                    console.printf("%d. %s", value.getChoice(), value.name());
+                    customConsole.printf("%d. %s", value.getChoice(), value.name());
                     if (ActionChoice.SAVE == value && isDirty) {
-                        console.printf(" *");
+                        customConsole.printf(" *");
                     }
-                    console.printf("\n");
                 }
-                i = ChooseNumberCommandLine.readInt(console);
+                i = ChooseNumberCommandLine.readInt(customConsole);
             }
-            console.flush();
+            // customConsole.flush();
             if (i == ActionChoice.LIST.getChoice()) {
-                showCreds(credentialData, nodes, console);
+                showCreds(credentialData, nodes, customConsole);
             }
             if (i == ActionChoice.DETAILS.getChoice()) {
                 int anInt = -1;
                 while (anInt < 0 || anInt >= credentialData.size()) {
-                    console.printf("Enter a number between %d and %d\n", 0, (credentialData.size() - 1));
-                    anInt = ChooseNumberCommandLine.readInt(console);
+                    customConsole.printf("Enter a number between %d and %d", 0, (credentialData.size() - 1));
+                    anInt = ChooseNumberCommandLine.readInt(customConsole);
                 }
                 final CredentialDatum credentialDatum = credentialData.get(anInt);
-                console.printf("URL = %s\nLogin = %s\npassword = *******\nDescription = %s\n",
+                customConsole.printf("URL = %s\nLogin = %s\npassword = *******\nDescription = %s\n",
                         credentialDatum.getUrl(),
                         credentialDatum.getLogin(),
                         credentialDatum.getComments());
             }
             if (i == ActionChoice.ADD.getChoice()) {
-                console.printf("URL ? ");
-                final String url = console.readLine();
-                console.printf("Login ? ");
-                final String login = console.readLine();
-                console.printf("Password ? ");
-                final String password = new String(console.readPassword());
-                console.printf("Comment ? ");
-                final String comment = console.readLine();
+                customConsole.printf("URL ? ");
+                final String url = customConsole.readLine();
+                customConsole.printf("Login ? ");
+                final String login = customConsole.readLine();
+                customConsole.printf("Password ? ");
+                final String password = new String(customConsole.readPassword());
+                customConsole.printf("Comment ? ");
+                final String comment = customConsole.readLine();
                 // TODO manage hierarchy
                 final CredentialDatum credentialDatum = new CredentialDatum("", url, login, password, comment);
                 nodes.getOrCreate("", credentialDatum);
@@ -81,14 +88,14 @@ public class AppCli {
                 isDirty = true;
             }
             if (i == ActionChoice.ADD_DIR.getChoice()) {
-                console.printf("What name ?\n");
-                final String nameDir = console.readLine();
+                customConsole.printf("What name ?\n");
+                final String nameDir = customConsole.readLine();
                 nodes.getOrCreate(nameDir, null); // TODO maybe bug if multiples level
             }
             if (i == ActionChoice.DELETE.getChoice()) {
-                showCreds(credentialData, nodes, console);
-                console.printf("Which one ?\n");
-                int i1 = ChooseNumberCommandLine.readInt(console);
+                showCreds(credentialData, nodes, customConsole);
+                customConsole.printf("Which one ?\n");
+                int i1 = ChooseNumberCommandLine.readInt(customConsole);
                 credentialData.remove(i1);
                 isDirty = true;
             }
@@ -109,19 +116,42 @@ public class AppCli {
         }
     }
 
-    private static void showCreds(List<CredentialDatum> credentialData, Node<CredentialDatum> nodes, Console console) {
+    private static void showCreds(List<CredentialDatum> credentialData, Node<CredentialDatum> nodes, CustomConsole console) {
         int i = 0;
         displayCreds(credentialData, console, nodes, i);
         //
     }
 
-
     private static Set<String> opened = new HashSet<>();
 
-    private static void displayCreds(List<CredentialDatum> credentialData, Console console, Node<CredentialDatum> nodes, int i) {
+    private static void displayCreds(List<CredentialDatum> credentialData, CustomConsole customConsole, Node<CredentialDatum> nodes, int i) {
         String infoStat;
         logger.info("Iterate over {} elements thanks to the node {}", nodes.getSubValues().size(), nodes.getName());
-        for (Node<CredentialDatum> subValue : nodes.getSubValues()) {
+
+
+        final List<DescriptibleConsoleItem> credentialsForConsole = getDescriptibleConsoleItems(nodes, customConsole);
+        Crud<DescriptibleConsoleItem> credentialDatumInConsoleCrud = new Crud<>(ConsoleFactory.getInstance(true), credentialsForConsole);
+        DescriptibleConsoleItem interact = null;
+        final LinkedList<String> parents = new LinkedList<>();
+        boolean elementFound = false;
+        while (!elementFound) {
+            interact = credentialDatumInConsoleCrud.interact(
+                    new CredentialDatumForConsole(
+                            customConsole,
+                            new CredentialDatum("devrait pas etre affiché", "url chiote", "login", "pawd", "comments")));
+            if (interact instanceof CredentialDatumForConsole) {
+                elementFound = true;
+            } else {
+                final CredentialDatumDirForConsole element = (CredentialDatumDirForConsole) interact;
+                parents.add(element.name());
+                final Node<CredentialDatum> selectedNode = nodes.findByHierarchy(parents);
+                List<DescriptibleConsoleItem> descriptibleConsoleItems = getDescriptibleConsoleItems(selectedNode, customConsole);
+                credentialDatumInConsoleCrud = new Crud<>(ConsoleFactory.getInstance(true), descriptibleConsoleItems);
+            }
+        }
+
+
+        /*for (Node<CredentialDatum> subValue : nodes.getSubValues()) {
             if (subValue.isLeaf()) {
                 logger.info("leaf");
                 infoStat = "  ";
@@ -146,7 +176,17 @@ public class AppCli {
             }
 
             i++;
-        }
+        }*/
+    }
+
+    private static List<DescriptibleConsoleItem> getDescriptibleConsoleItems(Node<CredentialDatum> nodes, CustomConsole customConsole) {
+        return nodes.getSubValues()
+                .stream()
+                .map(credentialDatumNode ->
+                        credentialDatumNode.getValue() == null
+                                ? new CredentialDatumDirForConsole(customConsole, credentialDatumNode.getName(), credentialDatumNode.getValue())
+                                : new CredentialDatumForConsole(customConsole, credentialDatumNode.getValue()))
+                .collect(Collectors.toList());
     }
 
 }
