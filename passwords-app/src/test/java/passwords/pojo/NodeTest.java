@@ -17,8 +17,10 @@ public class NodeTest extends TestCase {
         super.setUp();
         root = new Node<>("GrandParent", 1900);
         Node<Integer> aunt = root.getOrCreate("Aunt", 1925);
-        Node<Integer> father = root.getOrCreate("Father", 1927);
-        Node<Integer> character = father.getOrCreate("character", 1950);
+        // directory donc value = null
+        Node<Integer> father = root.getOrCreate("Father", null);
+        // directory donc value = null
+        Node<Integer> character = father.getOrCreate("character", null);
         Node<Integer> sister = father.getOrCreate("sister", 1952);
         Node<Integer> son = character.getOrCreate("son", 1970);
     }
