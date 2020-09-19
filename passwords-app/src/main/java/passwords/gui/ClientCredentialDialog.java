@@ -2,18 +2,21 @@ package passwords.gui;
 
 import commons.lib.gui.Positioner;
 import commons.lib.server.socket.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import passwords.communication.shared.message.consumer.CredentialResponseConsumer;
 import passwords.communication.shared.message.pojo.CredentialResponse;
 import passwords.communication.shared.message.pojo.GetCredential;
 import passwords.pojo.CredentialDatum;
 import passwords.settings.InputParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.crypto.NoSuchPaddingException;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,15 +47,27 @@ public class ClientCredentialDialog extends Dialog {
             final MessageConsumerManager messageConsumerManager = new MessageConsumerManager();
             final CompletableFuture<CredentialDatum> completableFuture = new CompletableFuture<>();
             messageConsumerManager.register(CredentialResponse.CODE, new CredentialResponseConsumer(completableFuture));
-            final Map<Integer, Function<List<String>, Wrapper>> wrappers = new HashMap<>();
-            wrappers.put(CredentialResponse.CODE, strings -> new Wrapper(CredentialResponse.CODE, new CredentialResponse(strings)));
+            final Map<Integer, Function<List<byte[]>, Wrapper>> wrappers = new HashMap<>();
+            wrappers.put(CredentialResponse.CODE, strings -> new Wrapper(CredentialResponse.CODE, new CredentialResponse(
+                    Message.bytesToString(strings.get(1)),
+                    Message.bytesToInt(strings.get(2)),
+                    Message.bytesToBool(strings.get(3)),
+                    new CredentialDatum(
+                            "",
+                            Message.bytesToString(strings.get(4)),
+                            Message.bytesToString(strings.get(5)),
+                            Message.bytesToString(strings.get(6)),
+                            ""
+                    )
+
+            )));
             WrapperFactory wrapperFactory = new WrapperFactory(wrappers);
             final Server server = new Server("localhost", 9999, 1, messageConsumerManager, wrapperFactory);
 
             try {
                 client.connectSendClose(getCredentialBytes);
                 server.listen();
-            } catch (IOException e) {
+            } catch (IOException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
                 logger.error(e.getMessage(), e);
             }
             try {

@@ -39,6 +39,18 @@ public class CredentialResponse extends Message {
         };
     }
 
+    @Override
+    public byte[][] serializeBytes() {
+        byte[][] result = new byte[6][];
+        result[0] = Message.stringToBytes(getResponseHostname());
+        result[1] = Message.intToBytes(getResponsePort());
+        result[2] = Message.boolToBytes(isRequireResponse());
+        result[3] = Message.stringToBytes(credentialDatum.getUrl());
+        result[4] = Message.stringToBytes(credentialDatum.getLogin());
+        result[5] = Message.stringToBytes(credentialDatum.getPassword());
+        return result;
+    }
+
     public CredentialDatum getCredentialDatum() {
         return credentialDatum;
     }

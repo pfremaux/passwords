@@ -17,7 +17,7 @@ import java.util.jar.JarFile;
 
 public final class InitAllAnnotations {
 
-    private final Logger logger = LoggerFactory.getLogger(InitAllAnnotations.class);
+    private static final Logger logger = LoggerFactory.getLogger(InitAllAnnotations.class);
     private final EncryptionFactory encryptionFactory;
     private final Map<Integer, EncryptionService> encryptionServiceRegistry = new HashMap<>();
 
@@ -40,26 +40,26 @@ public final class InitAllAnnotations {
             logger.error(errorMsg, e);
             throw new UnrecoverableException(
                     errorMsg,
-                    new String[]{"A error due to a programmer's mistake forced the application to stop"},
+                    new String[]{"An error due to a programmer's mistake forced the application to stop"},
                     e,
                     SystemUtils.EXIT_PROGRAMMER_ERROR);
         }
         encryptionFactory = new EncryptionFactory(encryptionServiceRegistry);
     }
 
-    private boolean isInIde() {
+    public static boolean isInIde() {
         final String path = InitAllAnnotations.class.getResource("InitAllAnnotations.class").getPath();
         logger.debug("Testing if in an IDE with path {}", path);
         return path.startsWith("/");
     }
 
-    private List<Class<?>> getClassesFromIde(String packageName)
+    private static List<Class<?>> getClassesFromIde(String packageName)
             throws ClassNotFoundException, IOException {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         assert classLoader != null;
-        String path = packageName.replace('.', '/');
-        Enumeration<URL> resources = classLoader.getResources(path);
-        List<File> dirs = new ArrayList<>();
+        final String path = packageName.replace('.', '/');
+        final Enumeration<URL> resources = classLoader.getResources(path);
+        final List<File> dirs = new ArrayList<>();
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
             dirs.add(new File(resource.getFile()));
@@ -80,7 +80,7 @@ public final class InitAllAnnotations {
         return listClassesPerJarFile(classLoader, path);
     }
 
-    private List<Class<?>> listClassesPerJarFile(ClassLoader classLoader, String path) throws IOException, ClassNotFoundException {
+    private static List<Class<?>> listClassesPerJarFile(ClassLoader classLoader, String path) throws IOException, ClassNotFoundException {
         final List<Class<?>> result = new ArrayList<>();
         final Enumeration<URL> resources = classLoader.getResources(path);
         while (resources.hasMoreElements()) {
@@ -100,7 +100,7 @@ public final class InitAllAnnotations {
         return result;
     }
 
-    private List<Class<?>> findClasses(File directory, String packageName) throws ClassNotFoundException {
+    private static List<Class<?>> findClasses(File directory, String packageName) throws ClassNotFoundException {
         final List<Class<?>> classes = new ArrayList<>();
         if (!directory.exists()) {
             return classes;

@@ -34,11 +34,11 @@ public class AppCli {
         final Optional<CredentialsSettings> credentialsSettings = chooseNumberCommandLine.readAndGetCredentialsSettings();
         if (credentialsSettings.isEmpty()) {
             logger.error("No credential settings loaded. Can't continue.");
-            SystemUtils.failUSer();
+            SystemUtils.failUser();
         }
         final List<CredentialDatum> credentialData = FileAccess.decipher(encryptionFactory, credentialsSettings.get(), null);
 
-        final CustomConsole customConsole = ConsoleFactory.getInstance(true, InputParameters.CONSOLE_INPUT.getPropertyPath());
+        final CustomConsole customConsole = ConsoleFactory.getInstance(InputParameters.CONSOLE_INPUT.getPropertyPath());
 
         Node<CredentialDatum> nodes = new Node<>("Root", null, new ArrayList<>());
         CredentialsTreeDialog.credentialDataToNodes(credentialData, nodes);
@@ -130,7 +130,7 @@ public class AppCli {
 
 
         final List<DescriptibleConsoleItem> credentialsForConsole = getDescriptibleConsoleItems(nodes, customConsole);
-        Crud<DescriptibleConsoleItem> credentialDatumInConsoleCrud = new Crud<>(ConsoleFactory.getInstance(true), credentialsForConsole);
+        Crud<DescriptibleConsoleItem> credentialDatumInConsoleCrud = new Crud<>(ConsoleFactory.getInstance(), credentialsForConsole);
         DescriptibleConsoleItem interact = null;
         final LinkedList<String> parents = new LinkedList<>();
         boolean elementFound = false;
@@ -146,7 +146,7 @@ public class AppCli {
                 parents.add(element.name());
                 final Node<CredentialDatum> selectedNode = nodes.findByHierarchy(parents);
                 List<DescriptibleConsoleItem> descriptibleConsoleItems = getDescriptibleConsoleItems(selectedNode, customConsole);
-                credentialDatumInConsoleCrud = new Crud<>(ConsoleFactory.getInstance(true), descriptibleConsoleItems);
+                credentialDatumInConsoleCrud = new Crud<>(ConsoleFactory.getInstance(), descriptibleConsoleItems);
             }
         }
 

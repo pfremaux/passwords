@@ -2,10 +2,7 @@ package passwords;
 
 import commons.lib.UnrecoverableException;
 import commons.lib.gui.MessageDialog;
-import commons.lib.server.socket.MessageConsumerManager;
-import commons.lib.server.socket.Server;
-import commons.lib.server.socket.Wrapper;
-import commons.lib.server.socket.WrapperFactory;
+import commons.lib.server.socket.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.communication.shared.message.consumer.GetCredentialConsumer;
@@ -61,8 +58,13 @@ public class AppGui {
         final CredentialsTreeDialog credentialsTreeDialog = new CredentialsTreeDialog(debugWindow, encryptionFactory, allCredentials, securitySettings, uiMessages);
         final int listeningPort = InputParameters.LISTENING_PORT.getPropertyInt();
         if (listeningPort != 0) {
-            final Map<Integer, Function<List<String>, Wrapper>> wrappers = new HashMap<>();
-            wrappers.put(GetCredential.CODE, strings -> new Wrapper(GetCredential.CODE, new GetCredential(strings)));
+            final Map<Integer, Function<List<byte[]>, Wrapper>> wrappers = new HashMap<>();
+            wrappers.put(GetCredential.CODE, bytes -> new Wrapper(GetCredential.CODE, new GetCredential(
+                    Message.bytesToString(bytes.get(1)),
+                    Message.bytesToInt(bytes.get(2)),
+                    Message.bytesToBool(bytes.get(3)),
+                    Message.bytesToString(bytes.get(4))
+            )));
             final WrapperFactory wrapperFactory = new WrapperFactory(wrappers);
             final MessageConsumerManager messageConsumerManager = new MessageConsumerManager();
             messageConsumerManager.register(GetCredential.CODE, new GetCredentialConsumer(allCredentials));

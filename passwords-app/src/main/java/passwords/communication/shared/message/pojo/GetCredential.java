@@ -35,6 +35,16 @@ public class GetCredential extends Message {
         };
     }
 
+    @Override
+    public byte[][] serializeBytes() {
+        byte[][] result = new byte[4][];
+        result[0] = Message.stringToBytes(getResponseHostname());
+        result[1] = Message.intToBytes(getResponsePort());
+        result[2] = Message.boolToBytes(isRequireResponse());
+        result[3] = Message.stringToBytes(url);
+        return result;
+    }
+
     public String getUrl() {
         return url;
     }
