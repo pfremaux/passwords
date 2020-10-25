@@ -4,7 +4,7 @@ package passwords;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.encryption.EncryptionFactory;
-import passwords.encryption.annotation.InitAllAnnotations;
+import passwords.encryption.annotation.InitAnnotationsForVersionedEncryptionClasses;
 import passwords.expectation.Expectation;
 import passwords.expectation.KeysExist;
 import passwords.gui.ClientCredentialDialog;
@@ -25,7 +25,7 @@ public final class Launcher {
     public static void main(String... args) {
         manageArguments(args);
         beServerOrIgnore();
-        final InitAllAnnotations annotationsConfig = new InitAllAnnotations();
+        final InitAnnotationsForVersionedEncryptionClasses annotationsConfig = new InitAnnotationsForVersionedEncryptionClasses();
         final EncryptionFactory encryptionFactory = annotationsConfig.getEncryptionFactory();
         final ResourceBundle uiMessages = ResourceBundle.getBundle("lang/ui_messages", Locale.ENGLISH);
         if (Boolean.parseBoolean(InputParameters.COMMAND_LINE_MODE.getPropertyString())) {
