@@ -54,7 +54,7 @@ public final class RecursiveAsymetricAndSymmetricEncryption implements Encryptio
             byte[] data = bufferedInputStream.readAllBytes();
             for (String password : credentialsSettings.getPasswords()) {
                 String wellSizedPassword = SymmetricHandler.fillPassword(password);
-                final SecretKeySpec aes = SymmetricHandler.getSecretKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
+                final SecretKeySpec aes = SymmetricHandler.getKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
                 try {
                     logger.info("Applying symmetric with pwd " + password);
                     data = SymmetricHandler.encrypt(aes, data, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
@@ -82,7 +82,7 @@ public final class RecursiveAsymetricAndSymmetricEncryption implements Encryptio
             for (String password : passwords) {
                 String wellSizedPassword = SymmetricHandler.fillPassword(password);
                 logger.info("Decrypting with password " + password);
-                final SecretKeySpec aes = SymmetricHandler.getSecretKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
+                final SecretKeySpec aes = SymmetricHandler.getKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
                 allEncryptedFile = SymmetricHandler.decrypt(aes, allEncryptedFile, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
             }
 

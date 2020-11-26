@@ -7,13 +7,13 @@ import commons.lib.security.asymetric.AsymmetricKeyHandler;
 import commons.lib.security.asymetric.PrivateKeyHandler;
 import commons.lib.security.asymetric.PublicKeyHandler;
 import commons.lib.security.symetric.SymmetricHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import passwords.StructuredFileHelper;
 import passwords.encryption.annotation.EncryptionVersion;
 import passwords.pojo.CredentialDatum;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -21,8 +21,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
@@ -62,7 +60,7 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
             int counter = 0;
             for (String password : credentialsSettings.getPasswords()) {
                 String wellSizedPassword = SymmetricHandler.fillPassword(password);
-                final SecretKeySpec aes = SymmetricHandler.getSecretKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
+                final SecretKeySpec aes = SymmetricHandler.getKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
                 try {
                     logger.info("Applying symmetric with pwd n." + counter);
                     counter++;
@@ -92,7 +90,7 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
                 String wellSizedPassword = SymmetricHandler.fillPassword(password);
                 logger.debug("Decrypting with password n." + counter);
                 counter++;
-                final SecretKeySpec aes = SymmetricHandler.getSecretKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
+                final SecretKeySpec aes = SymmetricHandler.getKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
                 allEncryptedFile = SymmetricHandler.decrypt(aes, allEncryptedFile, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
             }
 

@@ -67,8 +67,10 @@ public final class Launcher {
                     if (inputParameter.isPresent()) {
                         System.setProperty(inputParameter.get().getKey(), s[i + 1]);
                     } else {
-                        System.err.println("Unexpected parameter : " + s[i]);
-                        System.exit(-1);
+                        if (!s[i].startsWith("-D")) {
+                            System.err.println("Unexpected parameter : " + s[i]);
+                            System.exit(-1);
+                        }
                     }
                 }
             }
