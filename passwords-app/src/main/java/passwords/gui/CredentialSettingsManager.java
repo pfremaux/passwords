@@ -1,9 +1,9 @@
 package passwords.gui;
 
-import commons.lib.UnrecoverableException;
-import commons.lib.security.asymetric.AsymmetricKeyHandler;
-import commons.lib.security.asymetric.PrivateKeyHandler;
-import commons.lib.security.asymetric.PublicKeyHandler;
+import commons.lib.main.UnrecoverableException;
+import commons.lib.extra.security.asymetric.AsymmetricKeyHandler;
+import commons.lib.extra.security.asymetric.PrivateKeyHandler;
+import commons.lib.extra.security.asymetric.PublicKeyHandler;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
 import org.slf4j.Logger;

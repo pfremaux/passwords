@@ -1,7 +1,7 @@
 package passwords.gui;
 
-import commons.lib.gui.AskDialog;
-import commons.lib.gui.Positioner;
+import commons.lib.extra.gui.AskDialog;
+import commons.lib.extra.gui.Positioner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.encryption.EncryptionFactory;
@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.*;
 
-import static commons.lib.gui.Positioner.*;
+import static commons.lib.extra.gui.Positioner.*;
 
 public class CredentialsTreeDialog extends Dialog {
     private static final Logger logger = LoggerFactory.getLogger(CredentialsTreeDialog.class);

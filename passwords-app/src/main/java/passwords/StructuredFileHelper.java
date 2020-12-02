@@ -1,7 +1,7 @@
 package passwords;
 
 
-import commons.lib.filestructure.StructuredFile;
+import commons.lib.main.filestructure.StructuredFile;
 import passwords.pojo.CredentialDatum;
 
 import java.util.ArrayList;

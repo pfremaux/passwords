@@ -1,10 +1,10 @@
 package passwords;
 
-import commons.lib.SystemUtils;
-import commons.lib.console.ConsoleFactory;
-import commons.lib.console.CustomConsole;
-import commons.lib.console.v2.item.Crud;
-import commons.lib.console.v2.item.DescriptibleConsoleItem;
+import commons.lib.main.SystemUtils;
+import commons.lib.main.console.ConsoleFactory;
+import commons.lib.main.console.CustomConsole;
+import commons.lib.main.console.v2.item.Crud;
+import commons.lib.main.console.v2.item.DescriptibleConsoleItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.commandline.ActionChoice;

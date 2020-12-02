@@ -1,7 +1,7 @@
 package passwords.commandline;
 
-import commons.lib.console.ConsoleFactory;
-import commons.lib.console.CustomConsole;
+import commons.lib.main.console.ConsoleFactory;
+import commons.lib.main.console.CustomConsole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.gui.CredentialSettingsManager;

@@ -1,8 +1,8 @@
 package passwords;
 
-import commons.lib.UnrecoverableException;
-import commons.lib.gui.MessageDialog;
-import commons.lib.server.socket.*;
+import commons.lib.main.UnrecoverableException;
+import commons.lib.extra.gui.MessageDialog;
+import commons.lib.extra.server.socket.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.communication.shared.message.consumer.GetCredentialConsumer;

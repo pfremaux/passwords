@@ -1,7 +1,7 @@
 package passwords.communication.shared.message.pojo;
 
 
-import commons.lib.server.socket.Message;
+import commons.lib.extra.server.socket.Message;
 import passwords.pojo.CredentialDatum;
 
 import java.util.List;

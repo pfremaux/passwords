@@ -1,6 +1,6 @@
 package passwords.gui;
 
-import commons.lib.gui.Positioner;
+import commons.lib.extra.gui.Positioner;
 import passwords.expectation.Expectation;
 import passwords.expectation.KeysExist;
 import passwords.settings.CredentialsSettings;

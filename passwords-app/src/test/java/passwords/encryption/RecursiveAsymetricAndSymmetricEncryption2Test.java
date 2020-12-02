@@ -1,6 +1,6 @@
 package passwords.encryption;
 
-import commons.lib.security.asymetric.AsymmetricKeyHandler;
+import commons.lib.extra.security.asymetric.AsymmetricKeyHandler;
 import junit.framework.TestCase;
 import org.junit.FixMethodOrder;
 import passwords.pojo.CredentialDatum;

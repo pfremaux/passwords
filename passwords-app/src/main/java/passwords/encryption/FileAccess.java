@@ -1,6 +1,6 @@
 package passwords.encryption;
 
-import commons.lib.FileUtils;
+import commons.lib.main.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.Launcher;

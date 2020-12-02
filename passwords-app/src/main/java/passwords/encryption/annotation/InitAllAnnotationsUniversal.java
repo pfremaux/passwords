@@ -1,6 +1,6 @@
 package passwords.encryption.annotation;
 
-import commons.lib.UnrecoverableException;
+import commons.lib.main.UnrecoverableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

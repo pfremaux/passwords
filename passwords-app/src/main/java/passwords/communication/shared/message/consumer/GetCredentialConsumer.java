@@ -1,7 +1,7 @@
 package passwords.communication.shared.message.consumer;
 
-import commons.lib.server.socket.MessageConsumer;
-import commons.lib.server.socket.Wrapper;
+import commons.lib.extra.server.socket.MessageConsumer;
+import commons.lib.extra.server.socket.Wrapper;
 import passwords.communication.shared.message.pojo.CredentialResponse;
 import passwords.communication.shared.message.pojo.GetCredential;
 import passwords.pojo.CredentialDatum;

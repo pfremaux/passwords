@@ -1,10 +1,10 @@
 package passwords.encryption;
 
-import commons.lib.filestructure.StructuredFile;
-import commons.lib.security.asymetric.AsymmetricKeyHandler;
-import commons.lib.security.asymetric.PrivateKeyHandler;
-import commons.lib.security.asymetric.PublicKeyHandler;
-import commons.lib.security.symetric.SymmetricHandler;
+import commons.lib.main.filestructure.StructuredFile;
+import commons.lib.extra.security.asymetric.AsymmetricKeyHandler;
+import commons.lib.extra.security.asymetric.PrivateKeyHandler;
+import commons.lib.extra.security.asymetric.PublicKeyHandler;
+import commons.lib.extra.security.symetric.SymmetricHandler;
 import passwords.StructuredFileHelper;
 import passwords.encryption.annotation.EncryptionVersion;
 import passwords.pojo.CredentialDatum;

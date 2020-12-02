@@ -1,6 +1,6 @@
 package passwords.expectation.existingenc;
 
-import commons.lib.gui.ConfirmDialog;
+import commons.lib.extra.gui.ConfirmDialog;
 import passwords.expectation.Expectation;
 import passwords.expectation.FileUtils;
 import passwords.expectation.KeysExist;

@@ -1,8 +1,9 @@
 package passwords.expectation;
 
 
-import commons.lib.UnrecoverableException;
-import commons.lib.gui.ConfirmDialog;
+import commons.lib.main.SystemUtils;
+import commons.lib.main.UnrecoverableException;
+import commons.lib.extra.gui.ConfirmDialog;
 import passwords.settings.InputParameters;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,7 +32,7 @@ public interface Expectation {
                 throw new UnrecoverableException(
                         this.getClass().getCanonicalName() + " can't perform action.",
                         new String[]{"Can't continue th process."},
-                        UnrecoverableException.SYSTEM_ERROR);
+                        SystemUtils.EXIT_SYSTEM_ERROR);
             }
         }
     }

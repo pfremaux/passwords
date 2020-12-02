@@ -1,9 +1,9 @@
 package passwords.pojo;
 
-import commons.lib.SystemUtils;
-import commons.lib.UnrecoverableException;
-import commons.lib.console.CustomConsole;
-import commons.lib.console.v2.item.DescriptibleConsoleItem;
+import commons.lib.main.SystemUtils;
+import commons.lib.main.UnrecoverableException;
+import commons.lib.main.console.CustomConsole;
+import commons.lib.main.console.v2.item.DescriptibleConsoleItem;
 
 import java.util.UUID;
 

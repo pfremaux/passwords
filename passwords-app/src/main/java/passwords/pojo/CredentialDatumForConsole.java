@@ -1,7 +1,7 @@
 package passwords.pojo;
 
-import commons.lib.console.CustomConsole;
-import commons.lib.console.v2.item.DescriptibleConsoleItem;
+import commons.lib.main.console.CustomConsole;
+import commons.lib.main.console.v2.item.DescriptibleConsoleItem;
 
 public class CredentialDatumForConsole extends DescriptibleConsoleItem {
     // TODO WIP

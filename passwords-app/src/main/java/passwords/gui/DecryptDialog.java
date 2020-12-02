@@ -1,6 +1,6 @@
 package passwords.gui;
 
-import commons.lib.gui.Positioner;
+import commons.lib.extra.gui.Positioner;
 import passwords.settings.InputParameters;
 
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static commons.lib.gui.Positioner.*;
+import static commons.lib.extra.gui.Positioner.*;
 
 final class DecryptDialog extends Dialog {
     private final List<Integer> keyPairIndexes = new ArrayList<>();

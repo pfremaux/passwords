@@ -1,7 +1,7 @@
 package passwords.gui;
 
-import commons.lib.gui.Positioner;
-import commons.lib.server.socket.*;
+import commons.lib.extra.gui.Positioner;
+import commons.lib.extra.server.socket.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.communication.shared.message.consumer.CredentialResponseConsumer;
@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
-import static commons.lib.gui.Positioner.DEFAULT_BUTTON_HEIGHT;
+import static commons.lib.extra.gui.Positioner.DEFAULT_BUTTON_HEIGHT;
 
 public class ClientCredentialDialog extends Dialog {
     private static final Logger logger = LoggerFactory.getLogger(ClientCredentialDialog.class);
