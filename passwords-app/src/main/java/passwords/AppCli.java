@@ -5,6 +5,7 @@ import commons.lib.main.console.ConsoleFactory;
 import commons.lib.main.console.CustomConsole;
 import commons.lib.main.console.v2.item.Crud;
 import commons.lib.main.console.v2.item.DescriptibleConsoleItem;
+import commons.lib.main.console.v3.init.CliApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.commandline.ActionChoice;
@@ -18,13 +19,13 @@ import passwords.pojo.CredentialDatumDirForConsole;
 import passwords.pojo.CredentialDatumForConsole;
 import passwords.pojo.Node;
 import passwords.settings.CredentialsSettings;
-import passwords.settings.InputParameters;
 
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Deprecated
 public class AppCli {
     private static final Logger logger = LoggerFactory.getLogger(AppCli.class);
 
@@ -38,7 +39,7 @@ public class AppCli {
         }
         final List<CredentialDatum> credentialData = FileAccess.decipher(encryptionFactory, credentialsSettings.get(), null);
 
-        final CustomConsole customConsole = ConsoleFactory.getInstance(InputParameters.CONSOLE_INPUT.getPropertyPath());
+        final CustomConsole customConsole = ConsoleFactory.getInstance();
 
         Node<CredentialDatum> nodes = new Node<>("Root", null, new ArrayList<>());
         CredentialsTreeDialog.credentialDataToNodes(credentialData, nodes);
@@ -100,9 +101,10 @@ public class AppCli {
                 isDirty = true;
             }
             if (i == ActionChoice.SAVE.getChoice()) {
-                EncryptionService service = encryptionFactory.getService(InputParameters.ENCRYPT_VERSION.getPropertyInt());
-                final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
-                service.encrypt(fullPathSaveDir, credentialData, credentialsSettings.get());
+
+                //EncryptionService service = encryptionFactory.getService(InputParameters.ENCRYPT_VERSION.getPropertyInt());
+                //final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
+                //service.encrypt(fullPathSaveDir, credentialData, credentialsSettings.get());
                 isDirty = false;
             }
             if (i == ActionChoice.MOVE.getChoice()) {

@@ -18,7 +18,7 @@ public class ChooseNumberCommandLine {
     private final Logger logger = LoggerFactory.getLogger(ChooseNumberCommandLine.class);
 
     public Optional<CredentialsSettings> readAndGetCredentialsSettings() {
-        final CustomConsole customConsole = ConsoleFactory.getInstance(InputParameters.CONSOLE_INPUT.getPropertyPath());
+        final CustomConsole customConsole = ConsoleFactory.getInstance();
         if (customConsole == null) {
             logger.info("No console instance");
             return Optional.empty();

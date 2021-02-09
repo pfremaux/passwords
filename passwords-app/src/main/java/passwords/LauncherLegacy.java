@@ -16,8 +16,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 // TODO instantiate this class (or another one) in order to use attributes instead of N parameters per methods.
-public final class Launcher {
-    private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
+@Deprecated
+public final class LauncherLegacy {
+    private static final Logger logger = LoggerFactory.getLogger(LauncherLegacy.class);
     private final static Expectation[] expectationsCli = {
             new KeysExist()
     };

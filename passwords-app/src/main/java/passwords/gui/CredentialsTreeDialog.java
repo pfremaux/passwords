@@ -64,7 +64,7 @@ public class CredentialsTreeDialog extends Dialog {
             // action when an element is selected in the tree
             final JTree source = (JTree) e.getSource();
             selectedItem = (DefaultMutableTreeNode) source.getLastSelectedPathComponent();
-            logger.debug("Selection in tree : {}", selectedItem);
+            logger.info("Selection in tree : {} of type {}", selectedItem, (selectedItem == null ? "null" : selectedItem.getUserObject().getClass().getSimpleName()));
             // If the selected element is not valid or is Root (the only element that might be a String otherwise it's a Node)
             if (selectedItem == null || selectedItem.getUserObject() instanceof String) {
                 final Button addLvlBtn = positioner.getComponentByName(ADD_LEVEL_BTN_NAME, Button.class);
@@ -151,7 +151,7 @@ public class CredentialsTreeDialog extends Dialog {
                 });
         addNodeBtn.setName(ADD_NODE_BTN_NAME);
 
-        // Add all the element related to the credentials (used for creation/update/display
+        // Add all the element related to the credentials (used for creation/update/display)
         final Label labelUrl = positioner.addLabel("URL :", 300, DEFAULT_TEXTFIELD_HEIGHT);
         labelUrl.setName(URL_ELEMENT_LABEL_NAME);
         final TextField url = positioner.addTextField(300, DEFAULT_TEXTFIELD_HEIGHT);

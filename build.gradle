@@ -100,7 +100,7 @@ task uberJar(type: Jar) {
     }
     manifest {
         attributes(
-                'Main-Class': 'passwords.Launcher',
+                'Main-Class': 'passwords.LauncherNew',
                 'Manifest-Version': versionApp
         )
     }
