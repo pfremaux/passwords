@@ -3,7 +3,6 @@ package passwords.encryption;
 import commons.lib.main.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import passwords.LauncherLegacy;
 import passwords.pojo.CredentialDatum;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class FileAccess {
-    private static final Logger logger = LoggerFactory.getLogger(LauncherLegacy.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileAccess.class);
     // TODO move
     public static List<CredentialDatum> decipher(EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, ResourceBundle uiMessages) {
         final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();

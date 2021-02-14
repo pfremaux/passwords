@@ -7,6 +7,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.security.PrivateKey;
 import java.util.*;
 
+@Deprecated
 public class Node<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(Node.class);

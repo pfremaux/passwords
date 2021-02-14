@@ -68,9 +68,10 @@ public class NodeV2<T> {
     public DefaultMutableTreeNode getTreeNodeInstance(boolean allowChildren) {
         final DefaultMutableTreeNode currentNode;
         currentNode = new DefaultMutableTreeNode(this, allowChildren);
-
-        for (NodeV2<T> subValue : getChildren()) {
-            currentNode.add(subValue.getTreeNodeInstance(!getChildren().isEmpty()));
+        if (!isLeaf()) {
+            for (NodeV2<T> subValue : getChildren()) {
+                currentNode.add(subValue.getTreeNodeInstance(!getChildren().isEmpty()));
+            }
         }
         return currentNode;
     }
@@ -81,7 +82,7 @@ public class NodeV2<T> {
             final List<String> s =new ArrayList<>(parentContext);
             s.add(child.getNodeName());
             if (!child.isLeaf()) {
-                result.putAll(getHierarchy(s));
+                result.putAll(child.getHierarchy(s));
             } else {
                 final String key = String.join(" > ", s);
                 result.put(key, child.value);
@@ -124,5 +125,14 @@ public class NodeV2<T> {
     @Override
     public String toString() {
         return getNodeName();
+    }
+
+    public NodeV2<T> getChildByNodeName(String hierarchyLevelName) {
+        for (NodeV2<T> child : children) {
+            if (child.getNodeName().equals(hierarchyLevelName)) {
+                return child;
+            }
+        }
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package passwords.gui;
 
 import commons.lib.extra.gui.AskDialog;
 import commons.lib.extra.gui.Positioner;
+import commons.lib.main.console.v3.init.CliApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.encryption.EncryptionFactory;
@@ -190,9 +191,10 @@ public class CredentialsTreeDialogv2 extends Dialog {
                         selectedCredentialDatumNode.getNodeName(),
                         selectedCredentialDatumNode.getValue());
                 selectedCredentialDatumNode.replaceValueWith(credentialDatum);
-            } if (selectedCredentialDatumNode == null) {
+            }
+            if (selectedCredentialDatumNode == null) {
                 DefaultMutableTreeNode parentTreeNode = (DefaultMutableTreeNode) selectedItem.getParent();
-                NodeV2<CredentialDatum> parentNode = (NodeV2<CredentialDatum>)  parentTreeNode.getUserObject();
+                NodeV2<CredentialDatum> parentNode = (NodeV2<CredentialDatum>) parentTreeNode.getUserObject();
                 logger.info("Selected Item is not a leaf. [selectedItem={}]", selectedItem.getUserObject());
                 NodeV2<CredentialDatum> leaf = parentNode.addLeaf(credentialDatum);
                 removeEmptyLeaf(parentTreeNode);
@@ -213,7 +215,10 @@ public class CredentialsTreeDialogv2 extends Dialog {
         // Create the "save to filesystem" button.
         positioner.addButton(uiMessages.getString("tree.credentials.save.to.file"), DEFAULT_LABEL_WIDTH, DEFAULT_BUTTON_HEIGHT, e -> {
             // When the button is clicked
-            final EncryptionService service = encryptionFactory.getService(InputParameters.ENCRYPT_VERSION.getPropertyInt());
+            final int encryptionVersion = CliApp.PARAMETERS.fromProperty("encrypt.version").orElse(null).getPropertyInt();
+            logger.info("Encryption version {}", encryptionVersion);
+            final EncryptionService service = encryptionFactory.getService(encryptionVersion);
+            logger.info("service = {}", service);
             final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
             final List<CredentialDatum> data = new ArrayList<>(getCredentialsUpToDate().values());
             service.encrypt(fullPathSaveDir, data, securitySettings);
@@ -239,6 +244,28 @@ public class CredentialsTreeDialogv2 extends Dialog {
             while (hierarchyLevelNames.hasMoreElements()) {
                 final String hierarchyLevelName = hierarchyLevelNames.nextToken().trim();
                 if (hierarchyLevelNames.hasMoreTokens()) {
+                    NodeV2<CredentialDatum> childByNodeName = currentNode.getChildByNodeName(hierarchyLevelName);
+                    if (childByNodeName == null) {
+                        currentNode = currentNode.addDir(hierarchyLevelName);
+                    } else {
+                        currentNode = childByNodeName;
+                    }
+                }
+            }
+            final NodeV2<CredentialDatum> credentialDatumNode = NodeV2.leaf(currentNode, credentialDatum);
+            currentNode.getChildren().add(credentialDatumNode);
+        }
+    }
+
+    public static void credentialDataToNodesLegacy(List<CredentialDatum> datumList, NodeV2<CredentialDatum> rootNode) {
+        // Iterate over the decrypted data and build the Nodes relationship.
+        for (CredentialDatum credentialDatum : datumList) {
+            final String hierarchy = credentialDatum.getHierarchy();
+            final StringTokenizer hierarchyLevelNames = new StringTokenizer(hierarchy, ">");
+            NodeV2<CredentialDatum> currentNode = rootNode;
+            while (hierarchyLevelNames.hasMoreElements()) {
+                final String hierarchyLevelName = hierarchyLevelNames.nextToken().trim();
+                if (hierarchyLevelNames.hasMoreTokens()) {
                     // The parameter is null because it's not a leaf but a directory
                     currentNode = currentNode.addDir(hierarchyLevelName);
                 }
@@ -250,7 +277,7 @@ public class CredentialsTreeDialogv2 extends Dialog {
 
     @SuppressWarnings("unchecked")
     private NodeV2<CredentialDatum> getTypedUserObject(DefaultMutableTreeNode selectedItem) {
-        if ( selectedItem.getUserObject() instanceof String) {
+        if (selectedItem.getUserObject() instanceof String) {
             return null;//(Node<CredentialDatum>)  ((DefaultMutableTreeNode) selectedItem.getParent()).getUserObject();
         }
 

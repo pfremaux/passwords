@@ -19,7 +19,7 @@ public class ListCredentialAction extends ConsoleAction {
         NodeV2<CredentialDatum> credentialData = (NodeV2<CredentialDatum>) ConsoleContext.workingObject;
         ConsoleRunner consoleRunner = new ConsoleRunner(new NavigateNodeV2<>("Root", credentialData).navigate());
         consoleRunner.run();
-        return ConsoleContext.parentMenuStack.pop();
+        return ConsoleContext.currentMenu;
     }
 
 }

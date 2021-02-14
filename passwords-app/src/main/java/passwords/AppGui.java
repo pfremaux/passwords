@@ -11,6 +11,7 @@ import passwords.encryption.EncryptionFactory;
 import passwords.encryption.FileAccess;
 import passwords.gui.ChooseNumberDialog;
 import passwords.gui.CredentialsTreeDialog;
+import passwords.gui.CredentialsTreeDialogv2;
 import passwords.gui.DebugWindow;
 import passwords.pojo.CredentialDatum;
 import passwords.settings.CredentialsSettings;
@@ -55,7 +56,7 @@ public class AppGui {
 
 
     private static void manageAccountsCredentials(DebugWindow debugWindow, EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, List<CredentialDatum> allCredentials, ResourceBundle uiMessages) {
-        final CredentialsTreeDialog credentialsTreeDialog = new CredentialsTreeDialog(debugWindow, encryptionFactory, allCredentials, securitySettings, uiMessages);
+        final CredentialsTreeDialogv2 credentialsTreeDialog = new CredentialsTreeDialogv2(debugWindow, encryptionFactory, allCredentials, securitySettings, uiMessages);
         final int listeningPort = InputParameters.LISTENING_PORT.getPropertyInt();
         if (listeningPort != 0) {
             final Map<Integer, Function<List<byte[]>, Wrapper>> wrappers = new HashMap<>();
