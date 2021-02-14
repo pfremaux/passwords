@@ -1,4 +1,4 @@
-package passwords.commandline;
+package passwords.commandline.v1;
 
 import java.util.HashMap;
 import java.util.Map;

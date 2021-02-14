@@ -1,7 +1,8 @@
 package passwords.pojo;
 
 import commons.lib.main.console.CustomConsole;
-import commons.lib.main.console.v2.item.DescriptibleConsoleItem;
+import commons.lib.main.console.item.DescriptibleConsoleItem;
+import commons.lib.main.console.v3.interaction.ConsoleContext;
 
 public class CredentialDatumForConsole extends DescriptibleConsoleItem {
     // TODO WIP
@@ -19,12 +20,19 @@ public class CredentialDatumForConsole extends DescriptibleConsoleItem {
     public DescriptibleConsoleItem interactiveInit() {
         getConsole().printf("URL ?");
         String url = getConsole().readLine();
+        getConsole().printf("Login ?");
         String login = getConsole().readLine();
+        getConsole().printf("Comment ?");
         String comments = getConsole().readLine();
+        getConsole().printf("Password ?");
         char[] password = getConsole().readPassword();
-        this.credentialDatum = new CredentialDatum("root", url, login, new String(password), comments);
+        this.credentialDatum = new CredentialDatum("not set", url, login, new String(password), comments);
+        //(Node<CredentialDatum>) ConsoleContext.cache.get("creds");
         return this;
     }
 
 
+    public CredentialDatum getCredentialDatum() {
+        return credentialDatum;
+    }
 }

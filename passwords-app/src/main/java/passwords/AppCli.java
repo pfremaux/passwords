@@ -3,24 +3,18 @@ package passwords;
 import commons.lib.main.SystemUtils;
 import commons.lib.main.console.ConsoleFactory;
 import commons.lib.main.console.CustomConsole;
-import commons.lib.main.console.v2.item.Crud;
-import commons.lib.main.console.v2.item.DescriptibleConsoleItem;
-import commons.lib.main.console.v3.init.CliApp;
+import commons.lib.main.console.item.Crud;
+import commons.lib.main.console.item.DescriptibleConsoleItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import passwords.commandline.ActionChoice;
-import passwords.commandline.ChooseNumberCommandLine;
+import passwords.commandline.v1.ActionChoice;
+import passwords.commandline.v1.ChooseNumberCommandLine;
 import passwords.encryption.EncryptionFactory;
-import passwords.encryption.EncryptionService;
 import passwords.encryption.FileAccess;
-import passwords.gui.CredentialsTreeDialog;
-import passwords.pojo.CredentialDatum;
-import passwords.pojo.CredentialDatumDirForConsole;
-import passwords.pojo.CredentialDatumForConsole;
-import passwords.pojo.Node;
+import passwords.gui.CredentialsTreeDialogv2;
+import passwords.pojo.*;
 import passwords.settings.CredentialsSettings;
 
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,8 +35,8 @@ public class AppCli {
 
         final CustomConsole customConsole = ConsoleFactory.getInstance();
 
-        Node<CredentialDatum> nodes = new Node<>("Root", null, new ArrayList<>());
-        CredentialsTreeDialog.credentialDataToNodes(credentialData, nodes);
+        NodeV2<CredentialDatum> nodes = NodeV2.root();
+        CredentialsTreeDialogv2.credentialDataToNodes(credentialData, nodes);
         int i = 0;
         boolean isDirty = false;
         final Set<Integer> allowedChoices = Stream.of(ActionChoice.values()).map(ActionChoice::getChoice).collect(Collectors.toSet());
@@ -84,14 +78,14 @@ public class AppCli {
                 final String comment = customConsole.readLine();
                 // TODO manage hierarchy
                 final CredentialDatum credentialDatum = new CredentialDatum("", url, login, password, comment);
-                nodes.getOrCreate("", credentialDatum);
+                nodes.addLeaf(credentialDatum);
                 credentialData.add(credentialDatum);
                 isDirty = true;
             }
             if (i == ActionChoice.ADD_DIR.getChoice()) {
                 customConsole.printf("What name ?\n");
                 final String nameDir = customConsole.readLine();
-                nodes.getOrCreate(nameDir, null); // TODO maybe bug if multiples level
+                nodes.addDir(nameDir); // TODO maybe bug if multiples level
             }
             if (i == ActionChoice.DELETE.getChoice()) {
                 showCreds(credentialData, nodes, customConsole);
@@ -118,7 +112,7 @@ public class AppCli {
         }
     }
 
-    private static void showCreds(List<CredentialDatum> credentialData, Node<CredentialDatum> nodes, CustomConsole console) {
+    private static void showCreds(List<CredentialDatum> credentialData, NodeV2<CredentialDatum> nodes, CustomConsole console) {
         int i = 0;
         displayCreds(credentialData, console, nodes, i);
         //
@@ -126,9 +120,9 @@ public class AppCli {
 
     private static Set<String> opened = new HashSet<>();
 
-    private static void displayCreds(List<CredentialDatum> credentialData, CustomConsole customConsole, Node<CredentialDatum> nodes, int i) {
+    private static void displayCreds(List<CredentialDatum> credentialData, CustomConsole customConsole, NodeV2<CredentialDatum> nodes, int i) {
         String infoStat;
-        logger.info("Iterate over {} elements thanks to the node {}", nodes.getSubValues().size(), nodes.getName());
+        logger.info("Iterate over {} elements thanks to the node {}", nodes.getChildren().size(), nodes.getNodeName());
 
 
         final List<DescriptibleConsoleItem> credentialsForConsole = getDescriptibleConsoleItems(nodes, customConsole);
@@ -140,13 +134,13 @@ public class AppCli {
             interact = credentialDatumInConsoleCrud.interact(
                     new CredentialDatumForConsole(
                             customConsole,
-                            new CredentialDatum("devrait pas etre affiché", "url chiote", "login", "pawd", "comments")));
+                            new CredentialDatum("devrait pas etre affiché", "url", "login", "pawd", "comments")));
             if (interact instanceof CredentialDatumForConsole) {
                 elementFound = true;
             } else {
                 final CredentialDatumDirForConsole element = (CredentialDatumDirForConsole) interact;
                 parents.add(element.name());
-                final Node<CredentialDatum> selectedNode = nodes.findByHierarchy(parents);
+                final NodeV2<CredentialDatum> selectedNode = nodes.getNode(parents);
                 List<DescriptibleConsoleItem> descriptibleConsoleItems = getDescriptibleConsoleItems(selectedNode, customConsole);
                 credentialDatumInConsoleCrud = new Crud<>(ConsoleFactory.getInstance(), descriptibleConsoleItems);
             }
@@ -181,12 +175,12 @@ public class AppCli {
         }*/
     }
 
-    private static List<DescriptibleConsoleItem> getDescriptibleConsoleItems(Node<CredentialDatum> nodes, CustomConsole customConsole) {
-        return nodes.getSubValues()
+    private static List<DescriptibleConsoleItem> getDescriptibleConsoleItems(NodeV2<CredentialDatum> nodes, CustomConsole customConsole) {
+        return nodes.getChildren()
                 .stream()
                 .map(credentialDatumNode ->
                         credentialDatumNode.getValue() == null
-                                ? new CredentialDatumDirForConsole(customConsole, credentialDatumNode.getName(), credentialDatumNode.getValue())
+                                ? new CredentialDatumDirForConsole(customConsole, credentialDatumNode.getNodeName(), credentialDatumNode.getValue())
                                 : new CredentialDatumForConsole(customConsole, credentialDatumNode.getValue()))
                 .collect(Collectors.toList());
     }

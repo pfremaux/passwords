@@ -1,9 +1,10 @@
 package passwords;
 
-import commons.lib.main.SystemUtils;
 import commons.lib.main.console.ConsoleFactory;
-import commons.lib.main.console.CustomConsole;
 import commons.lib.main.console.v3.init.CliApp;
+import commons.lib.main.console.v3.interaction.ConsoleItem;
+import commons.lib.main.console.v3.interaction.ConsoleRunner;
+import passwords.commandline.v2.LoadCredentialDataAction;
 import passwords.encryption.EncryptionFactory;
 import passwords.encryption.annotation.InitAnnotationsForVersionedEncryptionClasses;
 import passwords.expectation.Expectation;
@@ -60,17 +61,21 @@ public class LauncherNew extends CliApp {
         launcherNew.validateAndLoad(args);
         ConsoleFactory.getInstance(Paths.get(launcherNew.getValueWithCommandLine(CONSOLE_INPUT))); // Maybe refactor and inclure it in the init with args[]
         launcherNew.beServerOrIgnore();
-        final InitAnnotationsForVersionedEncryptionClasses annotationsConfig = new InitAnnotationsForVersionedEncryptionClasses();
-        final EncryptionFactory encryptionFactory = annotationsConfig.getEncryptionFactory();
+
         final ResourceBundle uiMessages = ResourceBundle.getBundle("lang/ui_messages", Locale.ENGLISH);
         if (Boolean.parseBoolean(InputParameters.COMMAND_LINE_MODE.getPropertyString())) {
-            for (Expectation expectation : expectationsCli) {
+            LoadCredentialDataAction loadCredentialDataAction = new LoadCredentialDataAction();
+            ConsoleRunner consoleRunner = new ConsoleRunner(new ConsoleItem[]{loadCredentialDataAction});
+            consoleRunner.run();
+            /*for (Expectation expectation : expectationsCli) {
                 expectation.resolve();
             }
-            AppCli.commandLineInteraction(encryptionFactory);
+            AppCli.commandLineInteraction(encryptionFactory);*/
         } else {
             final DebugWindow debugWindow = new DebugWindow();
             debugWindow.setVisible(true);
+            final InitAnnotationsForVersionedEncryptionClasses annotationsConfig = new InitAnnotationsForVersionedEncryptionClasses();
+            final EncryptionFactory encryptionFactory = annotationsConfig.getEncryptionFactory();
             AppGui.manageGui(uiMessages, debugWindow, encryptionFactory);
         }
     }

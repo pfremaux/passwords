@@ -1,4 +1,4 @@
-package passwords.commandline;
+package passwords.commandline.v1;
 
 import commons.lib.main.console.ConsoleFactory;
 import commons.lib.main.console.CustomConsole;

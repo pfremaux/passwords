@@ -9,7 +9,7 @@ import passwords.encryption.EncryptionService;
 import passwords.expectation.Expectation;
 import passwords.expectation.SaveDirExist;
 import passwords.pojo.CredentialDatum;
-import passwords.pojo.Node;
+import passwords.pojo.NodeV2;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
 
@@ -26,8 +26,8 @@ import java.util.*;
 
 import static commons.lib.extra.gui.Positioner.*;
 
-public class CredentialsTreeDialog extends Dialog {
-    private static final Logger logger = LoggerFactory.getLogger(CredentialsTreeDialog.class);
+public class CredentialsTreeDialogv2 extends Dialog {
+    private static final Logger logger = LoggerFactory.getLogger(CredentialsTreeDialogv2.class);
 
     private static final String ADD_LEVEL_BTN_NAME = "addLevelBtn";
     private static final String ADD_NODE_BTN_NAME = "addNodeBtn";
@@ -49,14 +49,14 @@ public class CredentialsTreeDialog extends Dialog {
             new SaveDirExist()
     };
 
-    public CredentialsTreeDialog(Frame owner, EncryptionFactory encryptionFactory, List<CredentialDatum> datumList, CredentialsSettings securitySettings, ResourceBundle uiMessages) {
+    public CredentialsTreeDialogv2(Frame owner, EncryptionFactory encryptionFactory, List<CredentialDatum> datumList, CredentialsSettings securitySettings, ResourceBundle uiMessages) {
         super(owner);
         setModal(true);
         for (Expectation expectation : expectations) {
             expectation.resolve();
         }
 
-        final Node<CredentialDatum> rootNode = new Node<>("Root", null, new ArrayList<>());
+        final NodeV2<CredentialDatum> rootNode = NodeV2.root();
         credentialDataToNodes(datumList, rootNode);
 
         // Add the Nodes to the graphical tree
@@ -79,8 +79,8 @@ public class CredentialsTreeDialog extends Dialog {
                     return;
                 }
             }
-            final Node<CredentialDatum> node = getTypedUserObject(selectedItem);
-            if (node.getName().equalsIgnoreCase(Node.EMPTY)) {
+            final NodeV2<CredentialDatum> node = getTypedUserObject(selectedItem);
+            if (node.getNodeName().equalsIgnoreCase(NodeV2.EMPTY)) {
                 return;
             }
             // Depending on the Node selected (a leaf or not = a directory or a credential)...
@@ -90,7 +90,7 @@ public class CredentialsTreeDialog extends Dialog {
             final TextField login = positioner.getComponentByName(LOGIN_ELEMENT_NAME, TextField.class);
             final TextField password = positioner.getComponentByName(PASSWORD_ELEMENT_NAME, TextField.class);
             // If the selected element is a leaf
-            if (node.getValue() != null || node.getName().equalsIgnoreCase(Node.EMPTY)) {
+            if (node.getValue() != null || node.getNodeName().equalsIgnoreCase(NodeV2.EMPTY)) {
                 comment.setText(node.getValue().getComments());
                 url.setText(node.getValue().getUrl());
                 login.setText(node.getValue().getLogin());
@@ -126,15 +126,10 @@ public class CredentialsTreeDialog extends Dialog {
                         askDialog.ask(uiMessages.getString("tree.credentials.new.dir.name.choice"));
                         final String name = askDialog.getAnswer();
                         // Add the "Node" directory to the selected element(which is a directory itself)
-                        final Node<CredentialDatum> nodeSelected = getTypedUserObject(selectedItem);
-                        final Node<CredentialDatum> newNode = new Node<>(
-                                nodeSelected,
-                                name,
-                                null,
-                                new ArrayList<>());
-                        nodeSelected.getSubValues().add(newNode);
-                        final DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(newNode, true);
-                        newChild.add(new DefaultMutableTreeNode(Node.EMPTY, false));
+                        final NodeV2<CredentialDatum> nodeSelected = getTypedUserObject(selectedItem);
+                        NodeV2<CredentialDatum> addDir = nodeSelected.addDir(name);
+                        final DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(addDir, true);
+                        newChild.add(new DefaultMutableTreeNode(NodeV2.EMPTY, false));
                         selectedItem.add(newChild);
                         DefaultTreeModel defaultTreeModel = (DefaultTreeModel) jTree.getModel();
                         // Refresh the Tree, no idea how to not collapse the tree...
@@ -183,7 +178,7 @@ public class CredentialsTreeDialog extends Dialog {
         final Button saveInTreeButton = positioner.addButton(uiMessages.getString("btn.save.credential"), 200, DEFAULT_BUTTON_HEIGHT, e -> {
             logger.info("Saving the credential in the tree...");
             // When the button is clicked
-            final Node<CredentialDatum> selectedCredentialDatumNode = getTypedUserObject(selectedItem);
+            final NodeV2<CredentialDatum> selectedCredentialDatumNode = getTypedUserObject(selectedItem);
             final CredentialDatum credentialDatum = new CredentialDatum("",
                     url.getText(),
                     login.getText(),
@@ -192,22 +187,22 @@ public class CredentialsTreeDialog extends Dialog {
             if (selectedCredentialDatumNode != null && selectedCredentialDatumNode.isLeaf()) {
                 logger.info("The selected element is a leaf. Replacing its value by {}. [selectedElementName={}, selectedElementValues={}]",
                         credentialDatum,
-                        selectedCredentialDatumNode.getName(),
+                        selectedCredentialDatumNode.getNodeName(),
                         selectedCredentialDatumNode.getValue());
-                selectedCredentialDatumNode.replaceLeaf(credentialDatum);
+                selectedCredentialDatumNode.replaceValueWith(credentialDatum);
             } if (selectedCredentialDatumNode == null) {
                 DefaultMutableTreeNode parentTreeNode = (DefaultMutableTreeNode) selectedItem.getParent();
-                Node<CredentialDatum> parentNode = (Node<CredentialDatum>)  parentTreeNode.getUserObject();
+                NodeV2<CredentialDatum> parentNode = (NodeV2<CredentialDatum>)  parentTreeNode.getUserObject();
                 logger.info("Selected Item is not a leaf. [selectedItem={}]", selectedItem.getUserObject());
-                Node<CredentialDatum> orCreate = parentNode.getOrCreate(credentialDatum.toString(), credentialDatum);
+                NodeV2<CredentialDatum> leaf = parentNode.addLeaf(credentialDatum);
                 removeEmptyLeaf(parentTreeNode);
-                final DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(orCreate, false);
+                final DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(leaf, false);
                 parentTreeNode.add(newChild);
             } else {
                 logger.info("Selected Item is not a leaf. [selectedItem={}]", selectedItem.getUserObject());
-                Node<CredentialDatum> orCreate = selectedCredentialDatumNode.getOrCreate(selectedItem.getUserObject().toString(), credentialDatum);
                 removeEmptyLeaf(selectedItem);
-                final DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(orCreate, false);
+                NodeV2<CredentialDatum> leaf = selectedCredentialDatumNode.addLeaf(credentialDatum);
+                final DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(leaf, false);
                 selectedItem.add(newChild);
             }
             DefaultTreeModel defaultTreeModel = (DefaultTreeModel) jTree.getModel();
@@ -221,7 +216,6 @@ public class CredentialsTreeDialog extends Dialog {
             final EncryptionService service = encryptionFactory.getService(InputParameters.ENCRYPT_VERSION.getPropertyInt());
             final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
             final List<CredentialDatum> data = new ArrayList<>(getCredentialsUpToDate().values());
-            logger.info("service = {}", service);
             service.encrypt(fullPathSaveDir, data, securitySettings);
         });
         credentialDatumFormSetVisible(false, true);
@@ -236,33 +230,31 @@ public class CredentialsTreeDialog extends Dialog {
         });
     }
 
-    public static void credentialDataToNodes(List<CredentialDatum> datumList, Node<CredentialDatum> rootNode) {
+    public static void credentialDataToNodes(List<CredentialDatum> datumList, NodeV2<CredentialDatum> rootNode) {
         // Iterate over the decrypted data and build the Nodes relationship.
         for (CredentialDatum credentialDatum : datumList) {
             final String hierarchy = credentialDatum.getHierarchy();
             final StringTokenizer hierarchyLevelNames = new StringTokenizer(hierarchy, ">");
-            Node<CredentialDatum> currentNode = rootNode;
+            NodeV2<CredentialDatum> currentNode = rootNode;
             while (hierarchyLevelNames.hasMoreElements()) {
                 final String hierarchyLevelName = hierarchyLevelNames.nextToken().trim();
                 if (hierarchyLevelNames.hasMoreTokens()) {
                     // The parameter is null because it's not a leaf but a directory
-                    currentNode = currentNode.getOrCreate(hierarchyLevelName, null);
+                    currentNode = currentNode.addDir(hierarchyLevelName);
                 }
             }
-            final Node<CredentialDatum> credentialDatumNode = new Node<>(credentialDatum.getDisplayableInfo(),
-                    credentialDatum,
-                    new ArrayList<>());
-            currentNode.getSubValues().add(credentialDatumNode);// TODO just subvalue is updated, not mappedvalue
+            final NodeV2<CredentialDatum> credentialDatumNode = NodeV2.leaf(currentNode, credentialDatum);
+            currentNode.getChildren().add(credentialDatumNode);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private Node<CredentialDatum> getTypedUserObject(DefaultMutableTreeNode selectedItem) {
+    private NodeV2<CredentialDatum> getTypedUserObject(DefaultMutableTreeNode selectedItem) {
         if ( selectedItem.getUserObject() instanceof String) {
             return null;//(Node<CredentialDatum>)  ((DefaultMutableTreeNode) selectedItem.getParent()).getUserObject();
         }
 
-        return (Node<CredentialDatum>) selectedItem.getUserObject();
+        return (NodeV2<CredentialDatum>) selectedItem.getUserObject();
     }
 
     private void removeEmptyLeaf(DefaultMutableTreeNode node) {
@@ -272,7 +264,7 @@ public class CredentialsTreeDialog extends Dialog {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) children.nextElement();
             if (treeNode.isLeaf()) {
                 if (treeNode.getUserObject() instanceof String) {
-                    if (Node.EMPTY.equals(treeNode.getUserObject())) {
+                    if (NodeV2.EMPTY.equals(treeNode.getUserObject())) {
                         mutableTreeNodeToRemove = treeNode;
                     }
                 }
@@ -285,8 +277,8 @@ public class CredentialsTreeDialog extends Dialog {
 
     private Map<String, CredentialDatum> getCredentialsUpToDate() {
         final DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTree.getModel().getRoot();
-        Node<CredentialDatum> rootNode = getTypedUserObject(root);
-        Map<String, CredentialDatum> children = rootNode.getChildrenV2("");
+        NodeV2<CredentialDatum> rootNode = getTypedUserObject(root);
+        Map<String, CredentialDatum> children = rootNode.getHierarchy(Collections.emptyList());
         for (Map.Entry<String, CredentialDatum> entry : children.entrySet()) {
             entry.setValue(entry.getValue().move(entry.getKey()));
         }
