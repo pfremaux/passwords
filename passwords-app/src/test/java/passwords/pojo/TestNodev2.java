@@ -1,8 +1,9 @@
 package passwords.pojo;
 
+import commons.lib.NodeV2;
 import commons.lib.main.console.ConsoleFactory;
 import commons.lib.main.console.v3.interaction.ConsoleRunner;
-import passwords.commandline.v2.libcommon.NavigateNodeV2;
+import commons.lib.main.console.v3.interaction.NavigateNodeV2;
 
 import java.util.Arrays;
 

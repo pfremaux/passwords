@@ -10,7 +10,7 @@ import passwords.encryption.FileAccess;
 import passwords.encryption.annotation.InitAnnotationsForVersionedEncryptionClasses;
 import passwords.gui.CredentialsTreeDialogv2;
 import passwords.pojo.CredentialDatum;
-import passwords.pojo.NodeV2;
+import commons.lib.NodeV2;
 import passwords.settings.CredentialsSettings;
 
 import java.util.List;
@@ -36,6 +36,7 @@ public class LoadCredentialDataAction extends ConsoleAction {
         NodeV2<CredentialDatum> target = NodeV2.root();
         CredentialsTreeDialogv2.credentialDataToNodes(credentialData, target);
         ConsoleContext.workingObject = target;
+        ConsoleContext.parentMenuStack.push(ConsoleContext.currentMenu);
         return new ConsoleItem[] {
                 new SaveCredentialDataAction(),
                 new ListCredentialAction(),

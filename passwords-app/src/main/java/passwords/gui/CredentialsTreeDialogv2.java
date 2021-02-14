@@ -10,7 +10,7 @@ import passwords.encryption.EncryptionService;
 import passwords.expectation.Expectation;
 import passwords.expectation.SaveDirExist;
 import passwords.pojo.CredentialDatum;
-import passwords.pojo.NodeV2;
+import commons.lib.NodeV2;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
 

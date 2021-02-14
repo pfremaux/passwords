@@ -1,8 +1,8 @@
 package passwords;
 
-import commons.lib.main.UnrecoverableException;
 import commons.lib.extra.gui.MessageDialog;
 import commons.lib.extra.server.socket.*;
+import commons.lib.main.UnrecoverableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.communication.shared.message.consumer.GetCredentialConsumer;
@@ -10,7 +10,6 @@ import passwords.communication.shared.message.pojo.GetCredential;
 import passwords.encryption.EncryptionFactory;
 import passwords.encryption.FileAccess;
 import passwords.gui.ChooseNumberDialog;
-import passwords.gui.CredentialsTreeDialog;
 import passwords.gui.CredentialsTreeDialogv2;
 import passwords.gui.DebugWindow;
 import passwords.pojo.CredentialDatum;

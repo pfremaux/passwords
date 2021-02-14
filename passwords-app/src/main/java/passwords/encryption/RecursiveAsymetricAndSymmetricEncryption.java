@@ -1,5 +1,6 @@
 package passwords.encryption;
 
+import commons.lib.main.UnrecoverableException;
 import commons.lib.main.filestructure.StructuredFile;
 import commons.lib.extra.security.asymetric.AsymmetricKeyHandler;
 import commons.lib.extra.security.asymetric.PrivateKeyHandler;
@@ -102,9 +103,8 @@ public final class RecursiveAsymetricAndSymmetricEncryption implements Encryptio
             final StructuredFile load = StructuredFile.load(bytes, ";", CredentialDatum.NBR_FIELDS);
             return StructuredFileHelper.getCredentialData(load);
         } catch (IOException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            e.printStackTrace();
-            // TODO better error management
+            throw new UnrecoverableException("Bad private keys or password or programming error.", new String[]{"The keys you provided are not valid."
+            }, e, -3);
         }
-        return Collections.emptyList();
     }
 }

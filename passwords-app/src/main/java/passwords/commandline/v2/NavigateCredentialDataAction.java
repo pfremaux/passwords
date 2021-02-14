@@ -5,7 +5,7 @@ import commons.lib.main.console.v3.interaction.ConsoleContext;
 import commons.lib.main.console.v3.interaction.ConsoleItem;
 import commons.lib.main.console.v3.interaction.ConsoleNavigation;
 import passwords.pojo.CredentialDatum;
-import passwords.pojo.NodeV2;
+import commons.lib.NodeV2;
 
 import java.util.ArrayList;
 import java.util.List;

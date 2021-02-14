@@ -4,9 +4,9 @@ import commons.lib.main.console.v3.interaction.ConsoleAction;
 import commons.lib.main.console.v3.interaction.ConsoleContext;
 import commons.lib.main.console.v3.interaction.ConsoleItem;
 import commons.lib.main.console.v3.interaction.ConsoleRunner;
-import passwords.commandline.v2.libcommon.NavigateNodeV2;
+import commons.lib.main.console.v3.interaction.NavigateNodeV2;
 import passwords.pojo.CredentialDatum;
-import passwords.pojo.NodeV2;
+import commons.lib.NodeV2;
 
 public class ListCredentialAction extends ConsoleAction {
 

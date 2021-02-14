@@ -67,10 +67,6 @@ public class LauncherNew extends CliApp {
             LoadCredentialDataAction loadCredentialDataAction = new LoadCredentialDataAction();
             ConsoleRunner consoleRunner = new ConsoleRunner(new ConsoleItem[]{loadCredentialDataAction});
             consoleRunner.run();
-            /*for (Expectation expectation : expectationsCli) {
-                expectation.resolve();
-            }
-            AppCli.commandLineInteraction(encryptionFactory);*/
         } else {
             final DebugWindow debugWindow = new DebugWindow();
             debugWindow.setVisible(true);
