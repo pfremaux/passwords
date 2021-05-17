@@ -1,12 +1,12 @@
 package passwords.encryption;
 
-import commons.lib.main.UnrecoverableException;
-import commons.lib.main.filestructure.Hexa;
-import commons.lib.main.filestructure.StructuredFile;
 import commons.lib.extra.security.asymetric.AsymmetricKeyHandler;
 import commons.lib.extra.security.asymetric.PrivateKeyHandler;
 import commons.lib.extra.security.asymetric.PublicKeyHandler;
 import commons.lib.extra.security.symetric.SymmetricHandler;
+import commons.lib.main.UnrecoverableException;
+import commons.lib.main.filestructure.Hexa;
+import commons.lib.main.filestructure.StructuredFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.StructuredFileHelper;

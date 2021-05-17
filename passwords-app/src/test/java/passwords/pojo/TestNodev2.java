@@ -20,7 +20,7 @@ public class TestNodev2 {
         rep2.addLeaf(22);
         NodeV2<Integer> result = nodeRoot.getNode(Arrays.asList("rep1...", "rep11...", "111"));
         System.out.println(result.getNodeName());
-        ConsoleRunner consoleRunner = new ConsoleRunner(new NavigateNodeV2<>("Root", nodeRoot).navigate());
+        ConsoleRunner consoleRunner = new ConsoleRunner("default", new NavigateNodeV2<>("main", "Root", nodeRoot).navigate());
         consoleRunner.run();
     }
 }

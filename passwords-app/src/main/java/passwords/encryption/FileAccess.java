@@ -1,6 +1,7 @@
 package passwords.encryption;
 
 import commons.lib.main.FileUtils;
+import commons.lib.main.os.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.pojo.CredentialDatum;
@@ -30,6 +31,17 @@ public class FileAccess {
             allCredentials = new ArrayList<>();
         }
         return allCredentials;
+    }
+
+    public static void cipher(List<CredentialDatum> credentials, EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, ResourceBundle uiMessages) {
+        final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
+        //final Path fullPathSaveFile = fullPathSaveDir.resolve(InputParameters.ENCRYPTED_FILENAME.getPropertyPath());
+        logger.debug("Getting the encryptor version {}", InputParameters.DECRYPT_VERSION.getPropertyInt());
+        LogUtils.initLogs().info(""+encryptionFactory);
+        LogUtils.initLogs().info(""+InputParameters.DECRYPT_VERSION);
+        final EncryptionService encryptionService = encryptionFactory.getService(InputParameters.DECRYPT_VERSION.getPropertyInt());
+        logger.debug("EncryptionService found : {}", encryptionService);
+        encryptionService.encrypt(fullPathSaveDir, credentials,  securitySettings);
     }
 
 }

@@ -1,15 +1,19 @@
 package passwords.commandline.v2;
 
+import commons.lib.NodeV2;
 import commons.lib.main.console.ConsoleFactory;
 import commons.lib.main.console.v3.interaction.ConsoleAction;
-import commons.lib.main.console.v3.interaction.ConsoleContext;
 import commons.lib.main.console.v3.interaction.ConsoleItem;
+import commons.lib.main.console.v3.interaction.context.AllConsoleContexts;
 import passwords.pojo.CredentialDatum;
 
 public class CreateCredentialDataAction extends ConsoleAction {
 
-    public CreateCredentialDataAction() {
+    private String contextName;
+
+    public CreateCredentialDataAction(String contextName) {
         super("Create");
+        this.contextName = contextName;
     }
 
     @Override
@@ -19,18 +23,22 @@ public class CreateCredentialDataAction extends ConsoleAction {
 
     @Override
     public ConsoleItem[] go() {
-        String currentHierarchy = ConsoleContext.cache.get("currentHierarchy"); /// TODO update hierarchy through navigating in CRUD
+        final String currentHierarchy = AllConsoleContexts.allContexts.get(contextName).cache.get("currentHierarchy"); /// TODO update hierarchy through navigating in CRUD
         ConsoleFactory.getInstance().printf("url");
-        String url = ConsoleFactory.getInstance().readLine();
+        final String url = ConsoleFactory.getInstance().readLine();
         ConsoleFactory.getInstance().printf("login");
-        String login = ConsoleFactory.getInstance().readLine();
+        final String login = ConsoleFactory.getInstance().readLine();
         ConsoleFactory.getInstance().printf("passw");
-        char[] password = ConsoleFactory.getInstance().readPassword();
+        final char[] password = ConsoleFactory.getInstance().readPassword();
         ConsoleFactory.getInstance().printf("Description");
-        String description = ConsoleFactory.getInstance().readLine();
-        CredentialDatum credentialDatum = new CredentialDatum(currentHierarchy, url, login, new String(password), description);
-        //CredentialDatumForConsole credentialDatumForConsole = new CredentialDatumForConsole(ConsoleFactory.getInstance(), credentialDatum);
+        final String description = ConsoleFactory.getInstance().readLine();
+        final CredentialDatum credentialDatum = new CredentialDatum(currentHierarchy, url, login, new String(password), description);
+        // TODO WIP
+        NodeV2<CredentialDatum> root = (NodeV2<CredentialDatum>) AllConsoleContexts.allContexts.get(contextName).workingObject;
+        root.addLeaf(credentialDatum);
+        //root.
+        // CredentialDatumForConsole credentialDatumForConsole = new CredentialDatumForConsole(ConsoleFactory.getInstance(), credentialDatum);
 
-        return ConsoleContext.currentMenu;
+        return AllConsoleContexts.allContexts.get(contextName).currentMenu;
     }
 }

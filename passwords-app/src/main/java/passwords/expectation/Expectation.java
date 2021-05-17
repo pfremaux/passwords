@@ -1,9 +1,9 @@
 package passwords.expectation;
 
 
+import commons.lib.extra.gui.ConfirmDialog;
 import commons.lib.main.SystemUtils;
 import commons.lib.main.UnrecoverableException;
-import commons.lib.extra.gui.ConfirmDialog;
 import passwords.settings.InputParameters;
 
 import java.util.concurrent.CompletableFuture;

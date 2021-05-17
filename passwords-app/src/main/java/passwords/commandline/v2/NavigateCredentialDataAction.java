@@ -1,19 +1,22 @@
 package passwords.commandline.v2;
 
+import commons.lib.NodeV2;
 import commons.lib.main.console.v3.interaction.ConsoleAction;
-import commons.lib.main.console.v3.interaction.ConsoleContext;
 import commons.lib.main.console.v3.interaction.ConsoleItem;
 import commons.lib.main.console.v3.interaction.ConsoleNavigation;
+import commons.lib.main.console.v3.interaction.context.AllConsoleContexts;
 import passwords.pojo.CredentialDatum;
-import commons.lib.NodeV2;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NavigateCredentialDataAction extends ConsoleAction {
 
-    public NavigateCredentialDataAction(String label) {
+    private final String contextName;
+
+    public NavigateCredentialDataAction(String contextName, String label) {
         super(label);
+        this.contextName = contextName;
     }
 
     @Override
@@ -23,7 +26,7 @@ public class NavigateCredentialDataAction extends ConsoleAction {
 
     @Override
     public ConsoleItem[] go() {
-        final NodeV2<CredentialDatum> root = (NodeV2<CredentialDatum>) ConsoleContext.workingObject;
+        final NodeV2<CredentialDatum> root = (NodeV2<CredentialDatum>) AllConsoleContexts.allContexts.get(contextName).workingObject;
         // root.getChildren();
         final List<ConsoleItem> menu = new ArrayList<>();
         for (NodeV2<CredentialDatum> child : root.getChildren()) {
@@ -38,7 +41,7 @@ public class NavigateCredentialDataAction extends ConsoleAction {
     }
 
     private ConsoleNavigation navigateCredentialChildDir(NodeV2<CredentialDatum> child) {
-        return new ConsoleNavigation(child.getNodeName()) {
+        return new ConsoleNavigation(contextName, child.getNodeName()) {
             @Override
             public ConsoleItem[] navigate() {
                 return child.getChildren().stream()
@@ -58,7 +61,7 @@ public class NavigateCredentialDataAction extends ConsoleAction {
             @Override
             public ConsoleItem[] go() {
                 System.out.println("todo");
-                return ConsoleContext.currentMenu;
+                return AllConsoleContexts.allContexts.get(contextName).currentMenu;
             }
         };
     }

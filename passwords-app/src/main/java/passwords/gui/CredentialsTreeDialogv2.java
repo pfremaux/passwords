@@ -1,5 +1,6 @@
 package passwords.gui;
 
+import commons.lib.NodeV2;
 import commons.lib.extra.gui.AskDialog;
 import commons.lib.extra.gui.Positioner;
 import commons.lib.main.console.v3.init.CliApp;
@@ -10,7 +11,6 @@ import passwords.encryption.EncryptionService;
 import passwords.expectation.Expectation;
 import passwords.expectation.SaveDirExist;
 import passwords.pojo.CredentialDatum;
-import commons.lib.NodeV2;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
 

@@ -1,7 +1,7 @@
 package passwords.gui;
 
-import commons.lib.main.UnrecoverableException;
 import commons.lib.extra.gui.Positioner;
+import commons.lib.main.UnrecoverableException;
 import passwords.settings.InputParameters;
 
 import java.awt.*;

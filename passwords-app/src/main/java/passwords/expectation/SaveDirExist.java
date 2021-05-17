@@ -1,8 +1,8 @@
 package passwords.expectation;
 
-import passwords.settings.InputParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import passwords.settings.InputParameters;
 
 public class SaveDirExist implements Expectation {
 

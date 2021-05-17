@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.security.PrivateKey;
 import java.util.*;
 
 @Deprecated

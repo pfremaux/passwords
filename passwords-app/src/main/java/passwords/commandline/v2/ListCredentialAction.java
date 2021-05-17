@@ -1,25 +1,34 @@
 package passwords.commandline.v2;
 
+import commons.lib.NodeV2;
 import commons.lib.main.console.v3.interaction.ConsoleAction;
-import commons.lib.main.console.v3.interaction.ConsoleContext;
 import commons.lib.main.console.v3.interaction.ConsoleItem;
 import commons.lib.main.console.v3.interaction.ConsoleRunner;
 import commons.lib.main.console.v3.interaction.NavigateNodeV2;
+import commons.lib.main.console.v3.interaction.context.AllConsoleContexts;
+import commons.lib.main.console.v3.interaction.context.ConsoleContext;
 import passwords.pojo.CredentialDatum;
-import commons.lib.NodeV2;
 
 public class ListCredentialAction extends ConsoleAction {
 
-    public ListCredentialAction() {
+    private String contextName;
+
+    public ListCredentialAction(String contextName) {
         super("LIST");
+        this.contextName = contextName;
     }
 
     @Override
     public ConsoleItem[] go() {
-        NodeV2<CredentialDatum> credentialData = (NodeV2<CredentialDatum>) ConsoleContext.workingObject;
-        ConsoleRunner consoleRunner = new ConsoleRunner(new NavigateNodeV2<>("Root", credentialData).navigate());
+        NodeV2<CredentialDatum> credentialData = (NodeV2<CredentialDatum>) AllConsoleContexts.allContexts.get(contextName).workingObject;
+        String listNodes = "listNodes";
+        ConsoleContext consoleContext = new ConsoleContext();
+        consoleContext.workingObject = credentialData;
+
+        AllConsoleContexts.allContexts.put(listNodes, consoleContext);
+        ConsoleRunner consoleRunner = new ConsoleRunner(listNodes, new NavigateNodeV2<>(listNodes, "Root", credentialData).navigate());
         consoleRunner.run();
-        return ConsoleContext.currentMenu;
+        return AllConsoleContexts.allContexts.get(contextName).currentMenu;
     }
 
 }

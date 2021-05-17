@@ -4,6 +4,8 @@ import commons.lib.main.console.ConsoleFactory;
 import commons.lib.main.console.v3.init.CliApp;
 import commons.lib.main.console.v3.interaction.ConsoleItem;
 import commons.lib.main.console.v3.interaction.ConsoleRunner;
+import commons.lib.main.console.v3.interaction.context.AllConsoleContexts;
+import commons.lib.main.console.v3.interaction.context.ConsoleContext;
 import passwords.commandline.v2.LoadCredentialDataAction;
 import passwords.encryption.EncryptionFactory;
 import passwords.encryption.annotation.InitAnnotationsForVersionedEncryptionClasses;
@@ -37,6 +39,7 @@ public class LauncherNew extends CliApp {
     public static final String DISTANT_SERVER_HOSTNAME = "--sh";
     public static final String DISTANT_SERVER_PORT = "--sp";
     public static final String CONSOLE_INPUT = "--con";
+    public static final String MAIN_CONTEXT = "main";
 
     public void init() {
         register(PUBLIC_FILE_EXTENSION, "public.key.ext", "pub", "File extension of public keys.");
@@ -56,22 +59,26 @@ public class LauncherNew extends CliApp {
     }
 
     public static void main(String[] args) {
-
-        LauncherNew launcherNew = new LauncherNew();
+        final LauncherNew launcherNew = new LauncherNew();
         launcherNew.validateAndLoad(args);
-        ConsoleFactory.getInstance(Paths.get(launcherNew.getValueWithCommandLine(CONSOLE_INPUT))); // Maybe refactor and inclure it in the init with args[]
+        ConsoleFactory.getInstance(Paths.get(launcherNew.getValueWithCommandLine(CONSOLE_INPUT))); // Maybe refactor and include it in the init with args[]
         launcherNew.beServerOrIgnore();
 
+        // Initialize the encryption/decipher
+        final InitAnnotationsForVersionedEncryptionClasses annotationsConfig = new InitAnnotationsForVersionedEncryptionClasses();
+        final EncryptionFactory encryptionFactory = annotationsConfig.getEncryptionFactory();
+        System.out.println(encryptionFactory);
+        AllConsoleContexts.allContexts.put(MAIN_CONTEXT, new ConsoleContext());
+        AllConsoleContexts.allContexts.get(MAIN_CONTEXT).put(encryptionFactory);
         final ResourceBundle uiMessages = ResourceBundle.getBundle("lang/ui_messages", Locale.ENGLISH);
+        AllConsoleContexts.allContexts.get(MAIN_CONTEXT).put(uiMessages);
         if (Boolean.parseBoolean(InputParameters.COMMAND_LINE_MODE.getPropertyString())) {
-            LoadCredentialDataAction loadCredentialDataAction = new LoadCredentialDataAction();
-            ConsoleRunner consoleRunner = new ConsoleRunner(new ConsoleItem[]{loadCredentialDataAction});
+            final LoadCredentialDataAction loadCredentialDataAction = new LoadCredentialDataAction(MAIN_CONTEXT);
+            ConsoleRunner consoleRunner = new ConsoleRunner(MAIN_CONTEXT, new ConsoleItem[]{loadCredentialDataAction});
             consoleRunner.run();
         } else {
             final DebugWindow debugWindow = new DebugWindow();
             debugWindow.setVisible(true);
-            final InitAnnotationsForVersionedEncryptionClasses annotationsConfig = new InitAnnotationsForVersionedEncryptionClasses();
-            final EncryptionFactory encryptionFactory = annotationsConfig.getEncryptionFactory();
             AppGui.manageGui(uiMessages, debugWindow, encryptionFactory);
         }
     }

@@ -1,12 +1,12 @@
 package passwords.gui;
 
 import commons.lib.extra.gui.Positioner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import passwords.expectation.Expectation;
 import passwords.expectation.KeysExist;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;

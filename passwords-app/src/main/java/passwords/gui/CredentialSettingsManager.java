@@ -1,13 +1,13 @@
 package passwords.gui;
 
-import commons.lib.main.UnrecoverableException;
 import commons.lib.extra.security.asymetric.AsymmetricKeyHandler;
 import commons.lib.extra.security.asymetric.PrivateKeyHandler;
 import commons.lib.extra.security.asymetric.PublicKeyHandler;
-import passwords.settings.CredentialsSettings;
-import passwords.settings.InputParameters;
+import commons.lib.main.UnrecoverableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import passwords.settings.CredentialsSettings;
+import passwords.settings.InputParameters;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;

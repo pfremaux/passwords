@@ -1,18 +1,18 @@
 package passwords.encryption;
 
-import commons.lib.main.UnrecoverableException;
-import commons.lib.main.filestructure.StructuredFile;
 import commons.lib.extra.security.asymetric.AsymmetricKeyHandler;
 import commons.lib.extra.security.asymetric.PrivateKeyHandler;
 import commons.lib.extra.security.asymetric.PublicKeyHandler;
 import commons.lib.extra.security.symetric.SymmetricHandler;
+import commons.lib.main.UnrecoverableException;
+import commons.lib.main.filestructure.StructuredFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import passwords.StructuredFileHelper;
 import passwords.encryption.annotation.EncryptionVersion;
 import passwords.pojo.CredentialDatum;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
