@@ -31,7 +31,7 @@ public interface Expectation {
             } else {
                 throw new UnrecoverableException(
                         this.getClass().getCanonicalName() + " can't perform action.",
-                        new String[]{"Can't continue th process."},
+                        new String[]{"Can't continue the process."},
                         SystemUtils.EXIT_SYSTEM_ERROR);
             }
         }

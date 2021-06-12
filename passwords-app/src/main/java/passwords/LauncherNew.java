@@ -60,6 +60,9 @@ public class LauncherNew extends CliApp {
 
     public static void main(String[] args) {
         final LauncherNew launcherNew = new LauncherNew();
+        for (Expectation expectation : expectationsCli) {
+            expectation.resolve();
+        }
         launcherNew.validateAndLoad(args);
         ConsoleFactory.getInstance(Paths.get(launcherNew.getValueWithCommandLine(CONSOLE_INPUT))); // Maybe refactor and include it in the init with args[]
         launcherNew.beServerOrIgnore();
@@ -68,7 +71,7 @@ public class LauncherNew extends CliApp {
         final InitAnnotationsForVersionedEncryptionClasses annotationsConfig = new InitAnnotationsForVersionedEncryptionClasses();
         final EncryptionFactory encryptionFactory = annotationsConfig.getEncryptionFactory();
         System.out.println(encryptionFactory);
-        AllConsoleContexts.allContexts.put(MAIN_CONTEXT, new ConsoleContext());
+        AllConsoleContexts.initContext(MAIN_CONTEXT);
         AllConsoleContexts.allContexts.get(MAIN_CONTEXT).put(encryptionFactory);
         final ResourceBundle uiMessages = ResourceBundle.getBundle("lang/ui_messages", Locale.ENGLISH);
         AllConsoleContexts.allContexts.get(MAIN_CONTEXT).put(uiMessages);
