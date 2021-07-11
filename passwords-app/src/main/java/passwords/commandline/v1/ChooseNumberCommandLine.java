@@ -42,9 +42,9 @@ public class ChooseNumberCommandLine {
             }
             String[] combinations;
             boolean allInteger = false;
-            //customConsole.flush();
+
             while (!allInteger) {
-                // TODO plutot les passer en password pour plus de confid
+                // TODO plutot les passer en password pour plus de config
                 customConsole.printf("All the auth values must be integers in the range set in your configuration.\n");
                 customConsole.printf("Please enter the %d values separated by a comma. (5,2,15,...)\n", numberAuth);
                 String s = customConsole.readLine();
@@ -79,17 +79,4 @@ public class ChooseNumberCommandLine {
         return result;
     }
 
-    public static int readInt(Console console) {
-        String s;
-        int result = -99;
-        while (result == -99) {
-            try {
-                s = console.readLine();
-                result = Integer.parseInt(s);
-            } catch (Exception e) {
-                console.printf("Invalid number, retry");
-            }
-        }
-        return result;
-    }
 }

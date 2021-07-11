@@ -3,6 +3,7 @@ package passwords;
 import commons.lib.extra.gui.MessageDialog;
 import commons.lib.extra.server.socket.*;
 import commons.lib.main.UnrecoverableException;
+import commons.lib.main.console.v3.init.CliApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.communication.shared.message.consumer.GetCredentialConsumer;
@@ -14,7 +15,6 @@ import passwords.gui.CredentialsTreeDialogv2;
 import passwords.gui.DebugWindow;
 import passwords.pojo.CredentialDatum;
 import passwords.settings.CredentialsSettings;
-import passwords.settings.InputParameters;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -56,15 +56,18 @@ public class AppGui {
 
     private static void manageAccountsCredentials(DebugWindow debugWindow, EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, List<CredentialDatum> allCredentials, ResourceBundle uiMessages) {
         final CredentialsTreeDialogv2 credentialsTreeDialog = new CredentialsTreeDialogv2(debugWindow, encryptionFactory, allCredentials, securitySettings, uiMessages);
-        final int listeningPort = InputParameters.LISTENING_PORT.getPropertyInt();
+
+        final int listeningPort = CliApp.PARAMETERS.fromCommandLineKey(LauncherNew.LISTENING_PORT).orElseThrow().getPropertyInt();
         if (listeningPort != 0) {
             final Map<Integer, Function<List<byte[]>, Wrapper>> wrappers = new HashMap<>();
-            wrappers.put(GetCredential.CODE, bytes -> new Wrapper(GetCredential.CODE, new GetCredential(
-                    Message.bytesToString(bytes.get(1)),
-                    Message.bytesToInt(bytes.get(2)),
-                    Message.bytesToBool(bytes.get(3)),
-                    Message.bytesToString(bytes.get(4))
-            )));
+            wrappers.put(GetCredential.CODE, bytes -> new Wrapper(
+                    GetCredential.CODE,
+                    new GetCredential(
+                            Message.bytesToString(bytes.get(1)),
+                            Message.bytesToInt(bytes.get(2)),
+                            Message.bytesToBool(bytes.get(3)),
+                            Message.bytesToString(bytes.get(4))
+                    )));
             final WrapperFactory wrapperFactory = new WrapperFactory(wrappers);
             final MessageConsumerManager messageConsumerManager = new MessageConsumerManager();
             messageConsumerManager.register(GetCredential.CODE, new GetCredentialConsumer(allCredentials));

@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+@Deprecated
 public enum InputParameters {
     PUBLIC_FILE_EXTENSION("public.key.ext", "pub", "--pbext"),
     PRIVATE_FILE_EXTENSION("private.key.ext", "priv", "--pvext"),

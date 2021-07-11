@@ -20,13 +20,13 @@ public class ListCredentialAction extends ConsoleAction {
 
     @Override
     public ConsoleItem[] go() {
-        NodeV2<CredentialDatum> credentialData = (NodeV2<CredentialDatum>) AllConsoleContexts.allContexts.get(contextName).workingObject;
-        String listNodes = "listNodes";
+        final NodeV2<CredentialDatum> credentialData = (NodeV2<CredentialDatum>) AllConsoleContexts.allContexts.get(contextName).workingObject;
+        final String listNodes = "listNodes";
         ConsoleContext consoleContext = new ConsoleContext();
         consoleContext.workingObject = credentialData;
 
         AllConsoleContexts.allContexts.put(listNodes, consoleContext);
-        ConsoleRunner consoleRunner = new ConsoleRunner(listNodes, new NavigateNodeV2<>(listNodes, "Root", credentialData).navigate());
+        final ConsoleRunner consoleRunner = new ConsoleRunner(listNodes, new NavigateNodeV2<>(listNodes, "Root", credentialData).navigate());
         consoleRunner.run();
         return AllConsoleContexts.allContexts.get(contextName).currentMenu;
     }

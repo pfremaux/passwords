@@ -42,7 +42,7 @@ public class LoadCredentialDataAction extends ConsoleAction {
                 encryptionFactory,
                 credentialsSettings.get(),
                 messages);
-        NodeV2<CredentialDatum> target = NodeV2.root();
+        final NodeV2<CredentialDatum> target = NodeV2.root();
         CredentialsTreeDialogv2.credentialDataToNodes(credentialData, target);
         consoleContext.workingObject = target;
         consoleContext.parentMenuStack.push(consoleContext.currentMenu);

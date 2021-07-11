@@ -5,7 +5,6 @@ import commons.lib.main.console.v3.init.CliApp;
 import commons.lib.main.console.v3.interaction.ConsoleItem;
 import commons.lib.main.console.v3.interaction.ConsoleRunner;
 import commons.lib.main.console.v3.interaction.context.AllConsoleContexts;
-import commons.lib.main.console.v3.interaction.context.ConsoleContext;
 import passwords.commandline.v2.LoadCredentialDataAction;
 import passwords.encryption.EncryptionFactory;
 import passwords.encryption.annotation.InitAnnotationsForVersionedEncryptionClasses;
@@ -13,7 +12,6 @@ import passwords.expectation.Expectation;
 import passwords.expectation.KeysExist;
 import passwords.gui.ClientCredentialDialog;
 import passwords.gui.DebugWindow;
-import passwords.settings.InputParameters;
 
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -63,19 +61,20 @@ public class LauncherNew extends CliApp {
         for (Expectation expectation : expectationsCli) {
             expectation.resolve();
         }
+        // Validate arguments passed as arguments
         launcherNew.validateAndLoad(args);
+        // Initialize the console
         ConsoleFactory.getInstance(Paths.get(launcherNew.getValueWithCommandLine(CONSOLE_INPUT))); // Maybe refactor and include it in the init with args[]
         launcherNew.beServerOrIgnore();
 
         // Initialize the encryption/decipher
         final InitAnnotationsForVersionedEncryptionClasses annotationsConfig = new InitAnnotationsForVersionedEncryptionClasses();
         final EncryptionFactory encryptionFactory = annotationsConfig.getEncryptionFactory();
-        System.out.println(encryptionFactory);
         AllConsoleContexts.initContext(MAIN_CONTEXT);
         AllConsoleContexts.allContexts.get(MAIN_CONTEXT).put(encryptionFactory);
         final ResourceBundle uiMessages = ResourceBundle.getBundle("lang/ui_messages", Locale.ENGLISH);
         AllConsoleContexts.allContexts.get(MAIN_CONTEXT).put(uiMessages);
-        if (Boolean.parseBoolean(InputParameters.COMMAND_LINE_MODE.getPropertyString())) {
+        if (Boolean.parseBoolean(PARAMETERS.fromCommandLineKey(COMMAND_LINE_MODE).orElseThrow().getPropertyString())) {
             final LoadCredentialDataAction loadCredentialDataAction = new LoadCredentialDataAction(MAIN_CONTEXT);
             ConsoleRunner consoleRunner = new ConsoleRunner(MAIN_CONTEXT, new ConsoleItem[]{loadCredentialDataAction});
             consoleRunner.run();
