@@ -48,12 +48,12 @@ public class LauncherNew extends CliApp {
         register(FILE_DATUM_SEPARATOR, "file.datum.separator", ";", "Datum separator. For example in a CSV file the separator is a ; . The separator is used in the password store. It's advised to not include this character in your passwords.");
         register(NBR_KEYPAIRS, "keypairs.number", "10", "Number of key pair you want to generate.");
         register(SAVE_DIR, "saveRecursivly.directory", ".", "Path where you want to store and read the encrypted password store.");
-        register(KEYS_DIR, "keys.directory", "D:\\keys", "Path where the keys are generated and read.");
+        register(KEYS_DIR, "keys.directory", "./keys", "Path where the keys are generated and read.");
         register(COMMAND_LINE_MODE, "mode.cli", "false", "Set to true if you want to use the command line interface instead of the GUI.");
         register(LISTENING_PORT, "server.listening.port", "0", "");
         register(DISTANT_SERVER_HOSTNAME, "server.distant.hostname", "", "");
         register(DISTANT_SERVER_PORT, "server.distant.port", "0", "");
-        register(CONSOLE_INPUT, "console.input", "not set", "If you want to feed automatically inputs while executing the CLI.");
+        register(CONSOLE_INPUT, "console.input", "false", "If you want to feed automatically inputs while executing the CLI.");
     }
 
     public static void main(String[] args) {
