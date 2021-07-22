@@ -78,15 +78,15 @@ public class Node<T> {
     }
 
     public Node<T> getOrCreate(String currentHierarchyLevelName, T nodeValue) {
-        logger.info("getOrCreate({}, {})", currentHierarchyLevelName, nodeValue);
+        logger.debug("getOrCreate({}, {})", currentHierarchyLevelName, nodeValue);
         Node<T> tNode = null;
         tNode = valuesMapped.get(currentHierarchyLevelName);
         if (tNode == null) {
-            logger.info("Adding a new child node to {}. Consequently its hierarchy is {} and value is {}", name, currentHierarchyLevelName, nodeValue);
+            logger.debug("Adding a new child node to {}. Consequently its hierarchy is {} and value is {}", name, currentHierarchyLevelName, nodeValue);
             Node<T> tNode1 = new Node<T>(this, currentHierarchyLevelName, nodeValue, new ArrayList<>());
             subValues.add(tNode1);
             valuesMapped.put(currentHierarchyLevelName, tNode1);
-            logger.info("Map of children has {} children.", valuesMapped.size());
+            logger.debug("Map of children has {} children.", valuesMapped.size());
             return tNode1;
         } else {
             return tNode;

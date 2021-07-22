@@ -35,7 +35,7 @@ public class SaveCredentialDataAction extends ConsoleAction {
         final List<CredentialDatum> credentialData = flattenAllNodes(credentials);
         final ResourceBundle bundle = consoleContext.get(ResourceBundle.class);
         final CredentialsSettings settings = consoleContext.get(CredentialsSettings.class);
-        credentialData.forEach(c -> LogUtils.initLogs().info("hierarchy de " + c + " : " + c.getHierarchy()));
+        credentialData.forEach(c -> LogUtils.initLogs().debug("hierarchy de " + c + " : " + c.getHierarchy()));
         FileAccess.cipher(credentialData, encryptionFactory, settings, bundle);
         return consoleContext.currentMenu;
     }

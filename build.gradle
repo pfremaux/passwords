@@ -78,6 +78,8 @@ task makeBuild() {
     String newVersion = majorVersion + "." + mediumVersion + "." + minorVersion
     versionApp = prefix + newVersion
     logger.info("Preparing the fat jar with the version '{}'", versionApp)
+    dependsOn("build")
+    dependsOn("commons-lib:build")
     dependsOn("uberJar")
     if (!isDevBuild) doLast {
         logger.info("Updating file '{}'...", setupFileName)

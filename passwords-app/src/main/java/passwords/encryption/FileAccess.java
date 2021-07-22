@@ -27,7 +27,7 @@ public class FileAccess {
             allCredentials = encryptionService.decrypt(fullPathSaveDir, securitySettings);
         } else {
             logger.debug("No encrypted file found at {}", fullPathSaveFile.toAbsolutePath().toString());
-            logger.info("No encrypted file found.");
+            logger.debug("No encrypted file found.");
             allCredentials = new ArrayList<>();
         }
         return allCredentials;
@@ -37,8 +37,8 @@ public class FileAccess {
         final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
         //final Path fullPathSaveFile = fullPathSaveDir.resolve(InputParameters.ENCRYPTED_FILENAME.getPropertyPath());
         logger.debug("Getting the encryptor version {}", InputParameters.DECRYPT_VERSION.getPropertyInt());
-        LogUtils.initLogs().info(""+encryptionFactory);
-        LogUtils.initLogs().info(""+InputParameters.DECRYPT_VERSION);
+        LogUtils.initLogs().debug(""+encryptionFactory);
+        LogUtils.initLogs().debug(""+InputParameters.DECRYPT_VERSION);
         final EncryptionService encryptionService = encryptionFactory.getService(InputParameters.DECRYPT_VERSION.getPropertyInt());
         logger.debug("EncryptionService found : {}", encryptionService);
         encryptionService.encrypt(fullPathSaveDir, credentials,  securitySettings);

@@ -20,13 +20,13 @@ public class SaveDirExist implements Expectation {
 
     @Override
     public boolean control() {
-        logger.info("Verify if the data directory exists...");
+        logger.debug("Verify if the data directory exists...");
         return FileUtils.isDirectoryAndExist(InputParameters.SAVE_DIR.getPropertyPath());
     }
 
     @Override
     public void action() {
-        logger.info("Creating data directory...");
+        logger.debug("Creating data directory...");
         FileUtils.createDirectory(InputParameters.SAVE_DIR.getPropertyPath());
     }
 }

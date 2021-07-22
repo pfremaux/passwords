@@ -53,7 +53,7 @@ public class ChooseNumberDialog extends Dialog {
                         uiMessages);
                 decryptDialog.setModal(true);
                 decryptDialog.setVisible(true);
-                logger.info("decryptDialog closed");
+                logger.debug("decryptDialog closed");
                 final List<TextField> symmetricKeysGui = decryptDialog.getSymmetricKeysGui();
                 final List<String> passwords = new ArrayList<>();
                 for (TextField textField : symmetricKeysGui) {

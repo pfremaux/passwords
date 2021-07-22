@@ -24,7 +24,7 @@ public class CredentialSettingsManager {
     private final Logger logger = LoggerFactory.getLogger(CredentialSettingsManager.class);
 
     public CredentialsSettings getCredentialsSettings(Path pkPath, List<String> pwds, List<Integer> numbers) {
-        logger.info("Building credentials settings with {} passwords and {} public keys", pwds.size(), numbers.size());
+        logger.debug("Building credentials settings with {} passwords and {} public keys", pwds.size(), numbers.size());
         final List<PrivateKey> pvKeys = new ArrayList<>();
         final List<PublicKey> publicKeys = new ArrayList<>();
         final PrivateKeyHandler privateKeyHandler = new PrivateKeyHandler();

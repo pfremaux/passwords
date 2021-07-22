@@ -23,10 +23,10 @@ public final class InitAnnotationsForVersionedEncryptionClasses {
     public InitAnnotationsForVersionedEncryptionClasses() {
         try {
             final String packageName = EncryptionFactory.class.getPackageName();
-            logger.info("Searching annotated classes in package " + packageName);
+            logger.debug("Searching annotated classes in package " + packageName);
             final List<Class<?>> classes;
             classes = AnnotationUtils.getClassesFromPackageName(packageName);
-            logger.info("Found " + classes.size() + " class to analyze");
+            logger.debug("Found " + classes.size() + " class to analyze");
             for (Class aClass : classes) {
                 initEncVersion(aClass);
             }
@@ -39,13 +39,13 @@ public final class InitAnnotationsForVersionedEncryptionClasses {
                     e,
                     SystemUtils.EXIT_PROGRAMMER_ERROR);
         }
-        logger.info(encryptionServiceRegistry.size() + " encryptions registered");
+        logger.debug(encryptionServiceRegistry.size() + " encryptions registered");
         encryptionFactory = new EncryptionFactory(encryptionServiceRegistry);
     }
 
 
     private void initEncVersion(Class<?> aClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        logger.info("is "+aClass+" an annotation of encryption ?");
+        logger.debug("is "+aClass+" an annotation of encryption ?");
         if (aClass.isAnnotationPresent(EncryptionVersion.class)) {
             logger.fine(aClass+" is an annotation of encryption");
             final EncryptionVersion[] annotationsByType = aClass.getAnnotationsByType(EncryptionVersion.class);

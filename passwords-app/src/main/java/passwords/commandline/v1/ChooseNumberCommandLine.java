@@ -20,7 +20,7 @@ public class ChooseNumberCommandLine {
     public Optional<CredentialsSettings> readAndGetCredentialsSettings() {
         final CustomConsole customConsole = ConsoleFactory.getInstance();
         if (customConsole == null) {
-            logger.info("No console instance");
+            logger.debug("No console instance");
             return Optional.empty();
         } else {
             List<String> strPwds = new ArrayList<>();
@@ -37,7 +37,7 @@ public class ChooseNumberCommandLine {
                 customConsole.printf("Password n.%d ", i);
                 pwds[i] = customConsole.readPassword();
                 String pwd = new String(pwds[i]);
-                logger.info("You wrote -{}-", pwd);
+                logger.debug("You wrote -{}-", pwd);
                 strPwds.add(pwd);
             }
             String[] combinations;
