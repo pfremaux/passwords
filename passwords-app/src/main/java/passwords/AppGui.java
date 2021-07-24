@@ -57,7 +57,7 @@ public class AppGui {
     private static void manageAccountsCredentials(DebugWindow debugWindow, EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, List<CredentialDatum> allCredentials, ResourceBundle uiMessages) {
         final CredentialsTreeDialogv2 credentialsTreeDialog = new CredentialsTreeDialogv2(debugWindow, encryptionFactory, allCredentials, securitySettings, uiMessages);
 
-        final int listeningPort = CliApp.PARAMETERS.fromCommandLineKey(LauncherNew.LISTENING_PORT).orElseThrow().getPropertyInt();
+        final int listeningPort = CliApp.PARAMETERS.fromCommandLineKey(Launcher.LISTENING_PORT).orElseThrow().getPropertyInt();
         if (listeningPort != 0) {
             final Map<Integer, Function<List<byte[]>, Wrapper>> wrappers = new HashMap<>();
             wrappers.put(GetCredential.CODE, bytes -> new Wrapper(

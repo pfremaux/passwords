@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class LauncherNew extends CliApp {
+public class Launcher extends CliApp {
 
     private final static Expectation[] expectationsCli = {
             new KeysExist()
@@ -57,15 +57,15 @@ public class LauncherNew extends CliApp {
     }
 
     public static void main(String[] args) {
-        final LauncherNew launcherNew = new LauncherNew();
+        final Launcher launcher = new Launcher();
         for (Expectation expectation : expectationsCli) {
             expectation.resolve();
         }
         // Validate arguments passed as arguments
-        launcherNew.validateAndLoad(args);
+        launcher.validateAndLoad(args);
         // Initialize the console
-        ConsoleFactory.getInstance(Paths.get(launcherNew.getValueWithCommandLine(CONSOLE_INPUT))); // Maybe refactor and include it in the init with args[]
-        launcherNew.beServerOrIgnore();
+        ConsoleFactory.getInstance(Paths.get(launcher.getValueWithCommandLine(CONSOLE_INPUT))); // Maybe refactor and include it in the init with args[]
+        launcher.beServerOrIgnore();
 
         // Initialize the encryption/decipher
         final InitAnnotationsForVersionedEncryptionClasses annotationsConfig = new InitAnnotationsForVersionedEncryptionClasses();

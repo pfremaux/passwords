@@ -39,7 +39,7 @@ task makeBuild() {
     // by running "gradle tasks --group custom" you'll be able to visualize
     // all tasks where you set this line
     group = "custom"
-    // the description will be ouput while running the same command
+    // the description will be output while running the same command
     description = "SNAPSHOT/RELEASE depending on build-setup.properties"
 
     def majorVersion = 0
@@ -101,8 +101,13 @@ task uberJar(type: Jar) {
     }
     manifest {
         attributes(
-                'Main-Class': 'passwords.LauncherNew',
-                'Manifest-Version': versionApp
+                'Main-Class': 'passwords.Launcher',
+                'Entry-Point': 'passwords.Launcher',
+                'Implementation-Version': versionApp,
+                'Trusted-Only': true,
+                'Trusted-Library': true,
+                'Manifest-Version': versionApp,
+                'Sealed': true
         )
     }
 }
