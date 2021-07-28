@@ -2,6 +2,7 @@ package passwords.commandline.v1;
 
 import commons.lib.main.console.ConsoleFactory;
 import commons.lib.main.console.CustomConsole;
+import commons.lib.main.os.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.gui.CredentialSettingsManager;
@@ -20,7 +21,7 @@ public class ChooseNumberCommandLine {
     public Optional<CredentialsSettings> readAndGetCredentialsSettings() {
         final CustomConsole customConsole = ConsoleFactory.getInstance();
         if (customConsole == null) {
-            logger.debug("No console instance");
+            LogUtils.debug("No console instance");
             return Optional.empty();
         } else {
             List<String> strPwds = new ArrayList<>();
@@ -37,7 +38,7 @@ public class ChooseNumberCommandLine {
                 customConsole.printf("Password n.%d ", i);
                 pwds[i] = customConsole.readPassword();
                 String pwd = new String(pwds[i]);
-                logger.debug("You wrote -{}-", pwd);
+                LogUtils.debug("You wrote -{}-", pwd);
                 strPwds.add(pwd);
             }
             String[] combinations;

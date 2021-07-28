@@ -4,6 +4,7 @@ import commons.lib.NodeV2;
 import commons.lib.extra.gui.AskDialog;
 import commons.lib.extra.gui.Positioner;
 import commons.lib.main.console.v3.init.CliApp;
+import commons.lib.main.os.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.encryption.EncryptionFactory;
@@ -65,7 +66,7 @@ public class CredentialsTreeDialogv2 extends Dialog {
             // action when an element is selected in the tree
             final JTree source = (JTree) e.getSource();
             selectedItem = (DefaultMutableTreeNode) source.getLastSelectedPathComponent();
-            logger.debug("Selection in tree : {} of type {}", selectedItem, (selectedItem == null ? "null" : selectedItem.getUserObject().getClass().getSimpleName()));
+            LogUtils.debug("Selection in tree : {} of type {}", selectedItem, (selectedItem == null ? "null" : selectedItem.getUserObject().getClass().getSimpleName()));
             // If the selected element is not valid or is Root (the only element that might be a String otherwise it's a Node)
             if (selectedItem == null || selectedItem.getUserObject() instanceof String) {
                 final Button addLvlBtn = positioner.getComponentByName(ADD_LEVEL_BTN_NAME, Button.class);
@@ -147,7 +148,7 @@ public class CredentialsTreeDialogv2 extends Dialog {
                 e -> {
                     // When the button is clicked
                     if (selectedItem != null) {
-                        logger.debug("Adding creds in {}", selectedItem);
+                        LogUtils.debug("Adding creds in {}", selectedItem);
                         credentialDatumFormSetVisible(true, true);
                     }
                 });
@@ -177,7 +178,7 @@ public class CredentialsTreeDialogv2 extends Dialog {
         comment.setName(COMMENT_ELEMENT_NAME);
         // Create the "save credential" button.
         final Button saveInTreeButton = positioner.addButton(uiMessages.getString("btn.save.credential"), 200, DEFAULT_BUTTON_HEIGHT, e -> {
-            logger.debug("Saving the credential in the tree...");
+            LogUtils.debug("Saving the credential in the tree...");
             // When the button is clicked
             final NodeV2<CredentialDatum> selectedCredentialDatumNode = getTypedUserObject(selectedItem);
             final CredentialDatum credentialDatum = new CredentialDatum("",
@@ -186,7 +187,7 @@ public class CredentialsTreeDialogv2 extends Dialog {
                     password.getText(),
                     comment.getText());
             if (selectedCredentialDatumNode != null && selectedCredentialDatumNode.isLeaf()) {
-                logger.debug("The selected element is a leaf. Replacing its value by {}. [selectedElementName={}, selectedElementValues={}]",
+                LogUtils.debug("The selected element is a leaf. Replacing its value by {}. [selectedElementName={}, selectedElementValues={}]",
                         credentialDatum,
                         selectedCredentialDatumNode.getNodeName(),
                         selectedCredentialDatumNode.getValue());
@@ -195,13 +196,13 @@ public class CredentialsTreeDialogv2 extends Dialog {
             if (selectedCredentialDatumNode == null) {
                 DefaultMutableTreeNode parentTreeNode = (DefaultMutableTreeNode) selectedItem.getParent();
                 NodeV2<CredentialDatum> parentNode = (NodeV2<CredentialDatum>) parentTreeNode.getUserObject();
-                logger.debug("Selected Item is not a leaf. [selectedItem={}]", selectedItem.getUserObject());
+                LogUtils.debug("Selected Item is not a leaf. [selectedItem={}]", selectedItem.getUserObject());
                 NodeV2<CredentialDatum> leaf = parentNode.addLeaf(credentialDatum);
                 removeEmptyLeaf(parentTreeNode);
                 final DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(leaf, false);
                 parentTreeNode.add(newChild);
             } else {
-                logger.debug("Selected Item is not a leaf. [selectedItem={}]", selectedItem.getUserObject());
+                LogUtils.debug("Selected Item is not a leaf. [selectedItem={}]", selectedItem.getUserObject());
                 removeEmptyLeaf(selectedItem);
                 NodeV2<CredentialDatum> leaf = selectedCredentialDatumNode.addLeaf(credentialDatum);
                 final DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(leaf, false);
@@ -216,9 +217,9 @@ public class CredentialsTreeDialogv2 extends Dialog {
         positioner.addButton(uiMessages.getString("tree.credentials.save.to.file"), DEFAULT_LABEL_WIDTH, DEFAULT_BUTTON_HEIGHT, e -> {
             // When the button is clicked
             final int encryptionVersion = CliApp.PARAMETERS.fromProperty("encrypt.version").orElse(null).getPropertyInt();
-            logger.debug("Encryption version {}", encryptionVersion);
+            LogUtils.debug("Encryption version {}", encryptionVersion);
             final EncryptionService service = encryptionFactory.getService(encryptionVersion);
-            logger.debug("service = {}", service);
+            LogUtils.debug("service = {}", service);
             final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
             final List<CredentialDatum> data = new ArrayList<>(getCredentialsUpToDate().values());
             service.encrypt(fullPathSaveDir, data, securitySettings);

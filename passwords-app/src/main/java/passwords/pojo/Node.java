@@ -1,5 +1,6 @@
 package passwords.pojo;
 
+import commons.lib.main.os.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,15 +79,15 @@ public class Node<T> {
     }
 
     public Node<T> getOrCreate(String currentHierarchyLevelName, T nodeValue) {
-        logger.debug("getOrCreate({}, {})", currentHierarchyLevelName, nodeValue);
+        LogUtils.debug("getOrCreate({}, {})", currentHierarchyLevelName, nodeValue);
         Node<T> tNode = null;
         tNode = valuesMapped.get(currentHierarchyLevelName);
         if (tNode == null) {
-            logger.debug("Adding a new child node to {}. Consequently its hierarchy is {} and value is {}", name, currentHierarchyLevelName, nodeValue);
+            LogUtils.debug("Adding a new child node to {}. Consequently its hierarchy is {} and value is {}", name, currentHierarchyLevelName, nodeValue);
             Node<T> tNode1 = new Node<T>(this, currentHierarchyLevelName, nodeValue, new ArrayList<>());
             subValues.add(tNode1);
             valuesMapped.put(currentHierarchyLevelName, tNode1);
-            logger.debug("Map of children has {} children.", valuesMapped.size());
+            LogUtils.debug("Map of children has {} children.", valuesMapped.size());
             return tNode1;
         } else {
             return tNode;

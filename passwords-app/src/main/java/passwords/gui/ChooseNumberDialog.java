@@ -1,6 +1,7 @@
 package passwords.gui;
 
 import commons.lib.extra.gui.Positioner;
+import commons.lib.main.os.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.expectation.Expectation;
@@ -53,7 +54,7 @@ public class ChooseNumberDialog extends Dialog {
                         uiMessages);
                 decryptDialog.setModal(true);
                 decryptDialog.setVisible(true);
-                logger.debug("decryptDialog closed");
+                LogUtils.debug("decryptDialog closed");
                 final List<TextField> symmetricKeysGui = decryptDialog.getSymmetricKeysGui();
                 final List<String> passwords = new ArrayList<>();
                 for (TextField textField : symmetricKeysGui) {
@@ -61,7 +62,7 @@ public class ChooseNumberDialog extends Dialog {
                     passwords.add(text);
                 }
                 for (String pwd : passwords) {
-                    logger.debug(pwd);
+                    LogUtils.debug(pwd);
                 }
                 CredentialSettingsManager credentialSettingsManager = new CredentialSettingsManager();
                 this.credentialsSettings = credentialSettingsManager.getCredentialsSettings(keysPath, passwords, decryptDialog.getKeyPairIndexes());

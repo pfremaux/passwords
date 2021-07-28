@@ -7,6 +7,7 @@ import commons.lib.extra.security.symetric.SymmetricHandler;
 import commons.lib.main.UnrecoverableException;
 import commons.lib.main.filestructure.Hexa;
 import commons.lib.main.filestructure.StructuredFile;
+import commons.lib.main.os.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.StructuredFileHelper;
@@ -39,21 +40,21 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
 
     @Override
     public void encrypt(Path savePath, List<CredentialDatum> credentialData, CredentialsSettings credentialsSettings) {
-        logger.debug("Encrypting with " + this.getClass().getName());
+        LogUtils.debug("Encrypting with " + this.getClass().getName());
 
         final String separator = InputParameters.FILE_DATUM_SEPARATOR.getPropertyString();
         List<CredentialDatum> formattedCredentialData = getFormattedCredentialData(credentialData);
         final StructuredFile structuredFile = StructuredFileHelper.getInstance(separator, formattedCredentialData);
         final LinkedList<PublicKey> publicKeys = new LinkedList<>();
-        logger.debug("{} asymetric key to apply.", credentialsSettings.getNumbers());
+        LogUtils.debug("{} asymetric key to apply.", credentialsSettings.getNumbers());
         for (Integer number : credentialsSettings.getNumbers()) {
-            logger.debug("Getting public key number " + number);
+            LogUtils.debug("Getting public key number " + number);
             publicKeys.add(credentialsSettings.getPublicKeys().get(number));
         }
         PublicKeyHandler publicKeyHandler = new PublicKeyHandler();
 
         try {
-            logger.debug("Applying recursive asymmetric encryption");
+            LogUtils.debug("Applying recursive asymmetric encryption");
             BufferedInputStream bufferedInputStream = publicKeyHandler.recursiveProcessor(publicKeys, AsymmetricKeyHandler.toBufferedInputStream(structuredFile.toByteArray()));
             byte[] data = bufferedInputStream.readAllBytes();
             int counter = 0;
@@ -61,7 +62,7 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
                 String wellSizedPassword = SymmetricHandler.fillPassword(password);
                 final SecretKeySpec aes = SymmetricHandler.getKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
                 try {
-                    logger.debug("Applying symmetric with pwd n." + counter);
+                    LogUtils.debug("Applying symmetric with pwd n." + counter);
                     counter++;
                     data = SymmetricHandler.encrypt(aes, data, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
                 } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
@@ -70,7 +71,7 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
             }
 
             Path saveFileFullPath = savePath.resolve(InputParameters.ENCRYPTED_FILENAME.getPropertyPath());
-            logger.debug("Saving file " + saveFileFullPath.toFile().getAbsolutePath());
+            LogUtils.debug("Saving file " + saveFileFullPath.toFile().getAbsolutePath());
             Files.write(saveFileFullPath, data);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | IOException e) {
             throw new UnrecoverableException(e.getMessage(), e.getMessage(), e, -2);
@@ -87,7 +88,7 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
             int counter = 0;
             for (String password : passwords) {
                 String wellSizedPassword = SymmetricHandler.fillPassword(password);
-                logger.debug("Decrypting with password n." + counter);
+                LogUtils.debug("Decrypting with password n." + counter);
                 counter++;
                 final SecretKeySpec aes = SymmetricHandler.getKey(wellSizedPassword, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
                 allEncryptedFile = SymmetricHandler.decrypt(aes, allEncryptedFile, SymmetricHandler.DEFAULT_SYMMETRIC_ALGO);
@@ -95,7 +96,7 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
 
             final LinkedList<PrivateKey> privateKeys = new LinkedList<>();
             for (Integer number : credentialsSettings.getNumbers()) {
-                logger.debug("Getting private key " + number);
+                LogUtils.debug("Getting private key " + number);
                 PrivateKey privateKey = credentialsSettings.getPrivateKeys().get(number);
                 privateKeys.add(privateKey);
             }
@@ -107,7 +108,7 @@ public final class RecursiveAsymetricAndSymmetricEncryption2 implements Encrypti
             final byte[] bytesProcessed = bufferedInputStream.readAllBytes();
             final String separator = InputParameters.FILE_DATUM_SEPARATOR.getPropertyString();
             final StructuredFile load = StructuredFile.load(bytesProcessed, separator, CredentialDatum.NBR_FIELDS);
-            logger.debug("File loaded with {} lines and {} bytes", load.getFileData().size(), bytesProcessed.length);
+            LogUtils.debug("File loaded with {} lines and {} bytes", load.getFileData().size(), bytesProcessed.length);
             return StructuredFileHelper.getCredentialData(load);
         } catch (IOException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             throw new UnrecoverableException("Bad private keys or password or programming error.", new String[]{"The keys you provided are not valid."

@@ -93,12 +93,17 @@ task makeBuild() {
 
 task uberJar(type: Jar) {
     archiveClassifier = project.hasProperty("dev") ? "dev" : versionApp
+    from sourceSets.main.output
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    dependsOn configurations.runtimeClasspath
+
     from {
         configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }
                 .collect {
                     zipTree(it)
                 }
     }
+    exclude('**/*.txt')
     manifest {
         attributes(
                 'Main-Class': 'passwords.Launcher',

@@ -1,5 +1,6 @@
 package passwords.expectation;
 
+import commons.lib.main.os.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.settings.InputParameters;
@@ -20,13 +21,13 @@ public class SaveDirExist implements Expectation {
 
     @Override
     public boolean control() {
-        logger.debug("Verify if the data directory exists...");
+        LogUtils.debug("Verify if the data directory exists...");
         return FileUtils.isDirectoryAndExist(InputParameters.SAVE_DIR.getPropertyPath());
     }
 
     @Override
     public void action() {
-        logger.debug("Creating data directory...");
+        LogUtils.debug("Creating data directory...");
         FileUtils.createDirectory(InputParameters.SAVE_DIR.getPropertyPath());
     }
 }
