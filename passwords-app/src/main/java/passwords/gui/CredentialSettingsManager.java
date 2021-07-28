@@ -4,6 +4,7 @@ import commons.lib.extra.security.asymetric.AsymmetricKeyHandler;
 import commons.lib.extra.security.asymetric.PrivateKeyHandler;
 import commons.lib.extra.security.asymetric.PublicKeyHandler;
 import commons.lib.main.UnrecoverableException;
+import commons.lib.main.os.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import passwords.settings.CredentialsSettings;
@@ -24,7 +25,7 @@ public class CredentialSettingsManager {
     private final Logger logger = LoggerFactory.getLogger(CredentialSettingsManager.class);
 
     public CredentialsSettings getCredentialsSettings(Path pkPath, List<String> pwds, List<Integer> numbers) {
-        logger.debug("Building credentials settings with {} passwords and {} public keys", pwds.size(), numbers.size());
+        LogUtils.debug("Building credentials settings with {} passwords and {} public keys", pwds.size(), numbers.size());
         final List<PrivateKey> pvKeys = new ArrayList<>();
         final List<PublicKey> publicKeys = new ArrayList<>();
         final PrivateKeyHandler privateKeyHandler = new PrivateKeyHandler();
@@ -44,7 +45,7 @@ public class CredentialSettingsManager {
                 } else {
                     logger.warn("Unexpected file extension : {}", extension);
                 }
-                logger.debug("File {} found.", fileName);
+                LogUtils.debug("File {} found.", fileName);
             }
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException x) {
             // IOException can never be thrown by the iteration.

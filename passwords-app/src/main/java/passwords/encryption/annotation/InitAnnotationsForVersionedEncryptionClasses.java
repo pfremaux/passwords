@@ -23,10 +23,10 @@ public final class InitAnnotationsForVersionedEncryptionClasses {
     public InitAnnotationsForVersionedEncryptionClasses() {
         try {
             final String packageName = EncryptionFactory.class.getPackageName();
-            logger.debug("Searching annotated classes in package " + packageName);
+            LogUtils.debug("Searching annotated classes in package " + packageName);
             final List<Class<?>> classes;
             classes = AnnotationUtils.getClassesFromPackageName(packageName);
-            logger.debug("Found " + classes.size() + " class to analyze");
+            LogUtils.debug("Found " + classes.size() + " class to analyze");
             for (Class aClass : classes) {
                 initEncVersion(aClass);
             }
@@ -39,15 +39,15 @@ public final class InitAnnotationsForVersionedEncryptionClasses {
                     e,
                     SystemUtils.EXIT_PROGRAMMER_ERROR);
         }
-        logger.debug(encryptionServiceRegistry.size() + " encryptions registered");
+        LogUtils.debug(encryptionServiceRegistry.size() + " encryptions registered");
         encryptionFactory = new EncryptionFactory(encryptionServiceRegistry);
     }
 
 
     private void initEncVersion(Class<?> aClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        logger.debug("is "+aClass+" an annotation of encryption ?");
+        LogUtils.debug("is "+aClass+" an annotation of encryption ?");
         if (aClass.isAnnotationPresent(EncryptionVersion.class)) {
-            logger.fine(aClass+" is an annotation of encryption");
+            LogUtils.debug(aClass+" is an annotation of encryption");
             final EncryptionVersion[] annotationsByType = aClass.getAnnotationsByType(EncryptionVersion.class);
             final EncryptionService o = (EncryptionService) aClass.getConstructor().newInstance();
             final EncryptionService alreadyExistingVersion = encryptionServiceRegistry.put(annotationsByType[0].version(), o);

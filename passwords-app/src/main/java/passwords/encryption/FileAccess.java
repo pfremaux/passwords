@@ -21,13 +21,13 @@ public class FileAccess {
         final Path fullPathSaveFile = fullPathSaveDir.resolve(InputParameters.ENCRYPTED_FILENAME.getPropertyPath());
         final List<CredentialDatum> allCredentials;
         if (FileUtils.isFileExist(fullPathSaveFile)) {
-            logger.debug("Getting the Decryptor version {}", InputParameters.DECRYPT_VERSION.getPropertyInt());
+            LogUtils.debug("Getting the Decryptor version {}", InputParameters.DECRYPT_VERSION.getPropertyInt());
             final EncryptionService encryptionService = encryptionFactory.getService(InputParameters.DECRYPT_VERSION.getPropertyInt());
-            logger.debug("EncryptionService found : {}", encryptionService);
+            LogUtils.debug("EncryptionService found : {}", encryptionService);
             allCredentials = encryptionService.decrypt(fullPathSaveDir, securitySettings);
         } else {
-            logger.debug("No encrypted file found at {}", fullPathSaveFile.toAbsolutePath().toString());
-            logger.debug("No encrypted file found.");
+            LogUtils.debug("No encrypted file found at {}", fullPathSaveFile.toAbsolutePath().toString());
+            LogUtils.debug("No encrypted file found.");
             allCredentials = new ArrayList<>();
         }
         return allCredentials;
@@ -36,11 +36,11 @@ public class FileAccess {
     public static void cipher(List<CredentialDatum> credentials, EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, ResourceBundle uiMessages) {
         final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
         //final Path fullPathSaveFile = fullPathSaveDir.resolve(InputParameters.ENCRYPTED_FILENAME.getPropertyPath());
-        logger.debug("Getting the encryptor version {}", InputParameters.DECRYPT_VERSION.getPropertyInt());
-        LogUtils.initLogs().debug(""+encryptionFactory);
-        LogUtils.initLogs().debug(""+InputParameters.DECRYPT_VERSION);
+        LogUtils.debug("Getting the encryptor version {}", InputParameters.DECRYPT_VERSION.getPropertyInt());
+        LogUtils.debug(""+encryptionFactory);
+        LogUtils.debug(""+InputParameters.DECRYPT_VERSION);
         final EncryptionService encryptionService = encryptionFactory.getService(InputParameters.DECRYPT_VERSION.getPropertyInt());
-        logger.debug("EncryptionService found : {}", encryptionService);
+        LogUtils.debug("EncryptionService found : {}", encryptionService);
         encryptionService.encrypt(fullPathSaveDir, credentials,  securitySettings);
     }
 
