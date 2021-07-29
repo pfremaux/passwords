@@ -1,2 +1,2 @@
 #!/bin/bash
-gradle :commons-lib:build :passwords-app:build :makeBuild -Pdev && java -DhintIsInIde=false -jar ./build/libs/password-store-dev.jar --kdir . --sdir . --cli true
+gradle build uberJar -Pdev && java -DhintIsInIde=false -jar ./build/libs/password-store-SNAPSHOT-0.0.0.jar --kdir . --sdir . --cli false

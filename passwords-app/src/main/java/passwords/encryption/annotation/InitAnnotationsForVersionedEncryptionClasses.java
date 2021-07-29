@@ -32,7 +32,7 @@ public final class InitAnnotationsForVersionedEncryptionClasses {
             }
         } catch (ClassNotFoundException | IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
             final String errorMsg = "Error while processing the annotated classes.";
-            logger.severe(errorMsg + " " + e.getMessage());
+            LogUtils.error(errorMsg + " " + e.getMessage());
             throw new UnrecoverableException(
                     errorMsg,
                     new String[]{"An error due to a programmer's mistake forced the application to stop"},
@@ -52,7 +52,7 @@ public final class InitAnnotationsForVersionedEncryptionClasses {
             final EncryptionService o = (EncryptionService) aClass.getConstructor().newInstance();
             final EncryptionService alreadyExistingVersion = encryptionServiceRegistry.put(annotationsByType[0].version(), o);
             if (alreadyExistingVersion != null) {
-                logger.warning("There is more than one implementation for the version " + annotationsByType[0].version());
+                LogUtils.warning("There is more than one implementation for the version " + annotationsByType[0].version());
             }
         }
     }
