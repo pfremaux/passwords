@@ -5,6 +5,7 @@ import commons.lib.main.console.v3.init.CliApp;
 import commons.lib.main.console.v3.interaction.ConsoleItem;
 import commons.lib.main.console.v3.interaction.ConsoleRunner;
 import commons.lib.main.console.v3.interaction.context.AllConsoleContexts;
+import commons.lib.main.os.LogUtils;
 import passwords.commandline.v2.LoadCredentialDataAction;
 import passwords.encryption.EncryptionFactory;
 import passwords.encryption.annotation.InitAnnotationsForVersionedEncryptionClasses;
@@ -57,6 +58,9 @@ public class Launcher extends CliApp {
     }
 
     public static void main(String[] args) {
+        LogUtils.debug("test logs");
+        LogUtils.info("test logs");
+        LogUtils.error("test logs");
         final Launcher launcher = new Launcher();
         for (Expectation expectation : expectationsCli) {
             expectation.resolve();

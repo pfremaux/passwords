@@ -34,7 +34,6 @@ import java.util.List;
 
 @EncryptionVersion(version = 4)
 public final class RecursiveAsymetricAndSymmetricEncryption implements EncryptionService {
-    private final Logger logger = LoggerFactory.getLogger(RecursiveAsymetricAndSymmetricEncryption.class);
 
     @Override
     public void encrypt(Path savePath, List<CredentialDatum> credentialData, CredentialsSettings credentialsSettings) {

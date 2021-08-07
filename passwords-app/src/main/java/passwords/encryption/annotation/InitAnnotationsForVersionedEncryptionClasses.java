@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 
 public final class InitAnnotationsForVersionedEncryptionClasses {
 
-    private static final Logger logger = LogUtils.initLogs();
     private final EncryptionFactory encryptionFactory;
     private final Map<Integer, EncryptionService> encryptionServiceRegistry = new HashMap<>();
 

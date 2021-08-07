@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class FileAccess {
-    private static final Logger logger = LoggerFactory.getLogger(FileAccess.class);
     // TODO move
     public static List<CredentialDatum> decipher(EncryptionFactory encryptionFactory, CredentialsSettings securitySettings, ResourceBundle uiMessages) {
         final Path fullPathSaveDir = InputParameters.SAVE_DIR.getPropertyPath();
