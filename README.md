@@ -11,4 +11,7 @@ WIP don't try.
 
 `jarsigner -keystore .keystore password-store-0.1.6.jar myAlias`
 
-> The build process needs to be changed before we can sign the jar. 
+>The build process needs to be changed before we can sign the jar.
+
+* test
+ 

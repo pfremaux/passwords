@@ -38,7 +38,7 @@ public final class InitAnnotationsForVersionedEncryptionClasses {
                     e,
                     SystemUtils.EXIT_PROGRAMMER_ERROR);
         }
-        LogUtils.debug(encryptionServiceRegistry.size() + " encryptions registered");
+        LogUtils.debug(encryptionServiceRegistry.size() + " encryption registered");
         encryptionFactory = new EncryptionFactory(encryptionServiceRegistry);
     }
 

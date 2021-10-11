@@ -47,7 +47,7 @@ task makeBuild() {
     def mediumVersion = 0
     def minorVersion = 0
     def prefix = 'SNAPSHOT-'
-    def isDevBuild = project.hasProperty("dev") // test with -Pdev
+
     def props = new Properties()
     String setupFileName = "build-setup.properties"
     logger.info("loading setup file {}", setupFileName)

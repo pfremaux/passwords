@@ -43,6 +43,8 @@ public class CredentialsTreeDialogv2 extends Dialog {
     private static final String COMMENT_ELEMENT_NAME = "comment";
     private static final String SAVE_ELEMENT_NAME = "save";
     private static final String COPY_PASSWORD_ELEMENT_NAME = "btnCopyPwd";
+    public static final String DIR_NAME_FIELD_NAME = "dirNameField";
+    public static final String DIR_NAME_UPDATE_BUTTON_NAME = "dirNameUpdateButton";
     private final Positioner positioner = new Positioner();
     private DefaultMutableTreeNode selectedItem = null;
     private JTree jTree;
@@ -102,9 +104,11 @@ public class CredentialsTreeDialogv2 extends Dialog {
                 final Button addNodeBtn = positioner.getComponentByName(ADD_NODE_BTN_NAME, Button.class);
                 addNodeBtn.setVisible(false);
                 credentialDatumFormSetVisible(true, false);
+                renameDirFormSetVisible(false, true);
             } else {
                 // If the selected element is a directory
                 credentialDatumFormSetVisible(false, false);
+                renameDirFormSetVisible(true, true);
                 final Button addLvlBtn = positioner.getComponentByName(ADD_LEVEL_BTN_NAME, Button.class);
                 addLvlBtn.setVisible(true);
                 final Button addNodeBtn = positioner.getComponentByName(ADD_NODE_BTN_NAME, Button.class);
@@ -115,6 +119,20 @@ public class CredentialsTreeDialogv2 extends Dialog {
         });
         jTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         jTree.setName("tree");
+        // Directory name editor
+        final TextField dirName = positioner.addTextField(200, DEFAULT_TEXTFIELD_HEIGHT);
+        dirName.setName(DIR_NAME_FIELD_NAME);
+        final Button dirNameUpdateButton = positioner.addButton("Save", 200, DEFAULT_BUTTON_HEIGHT, e -> {
+            final NodeV2<CredentialDatum> node = getTypedUserObject(selectedItem);
+            final TextField dirNameField = positioner.getComponentByName(DIR_NAME_FIELD_NAME, TextField.class);
+            final String nodeName = node.getNodeName();
+            System.out.println(nodeName);
+            node.setNodeName(dirNameField.getText());
+        });
+        dirNameUpdateButton.setName(DIR_NAME_UPDATE_BUTTON_NAME);
+        positioner.setPutUnder(true);
+
+        // End of directory name editor
         // Create the button for creating a directory
         final Button addDirectoryButton = positioner.addButton(
                 uiMessages.getString("tree.credentials.new.dir.btn"),
@@ -178,6 +196,7 @@ public class CredentialsTreeDialogv2 extends Dialog {
         comment.setName(COMMENT_ELEMENT_NAME);
         // Create the "save credential" button.
         final Button saveInTreeButton = positioner.addButton(uiMessages.getString("btn.save.credential"), 200, DEFAULT_BUTTON_HEIGHT, e -> {
+
             LogUtils.debug("Saving the credential in the tree...");
             // When the button is clicked
             final NodeV2<CredentialDatum> selectedCredentialDatumNode = getTypedUserObject(selectedItem);
@@ -311,6 +330,18 @@ public class CredentialsTreeDialogv2 extends Dialog {
             entry.setValue(entry.getValue().move(entry.getKey()));
         }
         return children;
+    }
+
+
+    private void renameDirFormSetVisible(boolean v, boolean clear) {
+        final TextField dirNameField = positioner.getComponentByName(DIR_NAME_FIELD_NAME, TextField.class);
+        final Button saveDirName = positioner.getComponentByName(DIR_NAME_UPDATE_BUTTON_NAME, Button.class);
+        saveDirName.setVisible(true);
+        if (clear) {
+            dirNameField.setText("");
+        }
+        dirNameField.setVisible(v);
+        saveDirName.setVisible(v);
     }
 
     private void credentialDatumFormSetVisible(boolean v, boolean clear) {
