@@ -1,16 +1,15 @@
 package passwords.pojo;
 
 import commons.lib.main.os.LogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Deprecated
 public class Node<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(Node.class);
+    private static final Logger logger = LogUtils.initLogs();
 
     public static final String EMPTY = ".";
 

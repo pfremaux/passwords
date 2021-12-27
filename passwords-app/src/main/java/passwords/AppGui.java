@@ -4,8 +4,7 @@ import commons.lib.extra.gui.MessageDialog;
 import commons.lib.extra.server.socket.*;
 import commons.lib.main.UnrecoverableException;
 import commons.lib.main.console.v3.init.CliApp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import commons.lib.main.os.LogUtils;
 import passwords.communication.shared.message.consumer.GetCredentialConsumer;
 import passwords.communication.shared.message.pojo.GetCredential;
 import passwords.encryption.EncryptionFactory;
@@ -24,9 +23,10 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 public class AppGui {
-    private static final Logger logger = LoggerFactory.getLogger(AppGui.class);
+    private static final Logger logger = LogUtils.initLogs();
 
     public static void manageGui(ResourceBundle uiMessages, DebugWindow debugWindow, EncryptionFactory encryptionServiceFactory) {
         final CompletableFuture<CredentialsSettings> future = new CompletableFuture<>();
@@ -39,17 +39,17 @@ public class AppGui {
             manageAccountsCredentials(debugWindow, encryptionServiceFactory, credentialsSettings, allCredentials, uiMessages);
             debugWindow.dispose();
         } catch (UnrecoverableException e) {
-            logger.error("Unrecoverable error...", e);
+            logger.throwing("AppGui", "manageGui", e);
             if (e.getMessageInformUser() != null) {
                 final MessageDialog messageDialog = new MessageDialog(null, e.getMessageInformUser());
                 messageDialog.setVisible(true);
             }
         } catch (InterruptedException | ExecutionException e) {
-            logger.error("Execution error...", e);
+            logger.throwing("AppGui", "manageGui", e);
             final MessageDialog messageDialog = new MessageDialog(null, new String[]{e.getMessage()});
             messageDialog.setVisible(true);
         } catch (Throwable e) {
-            logger.error("Fatal error...", e);
+            logger.throwing("AppGui", "manageGui", e);
         }
     }
 
@@ -75,7 +75,7 @@ public class AppGui {
             try {
                 server.listen();
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                logger.throwing("AppGui", "manageAccountsCredentials",  e);
             }
         } else {
             credentialsTreeDialog.setVisible(true);

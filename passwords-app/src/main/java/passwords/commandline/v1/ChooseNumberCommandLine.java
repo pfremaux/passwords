@@ -3,20 +3,18 @@ package passwords.commandline.v1;
 import commons.lib.main.console.ConsoleFactory;
 import commons.lib.main.console.CustomConsole;
 import commons.lib.main.os.LogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import passwords.gui.CredentialSettingsManager;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
 
-import java.io.Console;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class ChooseNumberCommandLine {
-    private final Logger logger = LoggerFactory.getLogger(ChooseNumberCommandLine.class);
+    private final Logger logger = LogUtils.initLogs();
 
     public Optional<CredentialsSettings> readAndGetCredentialsSettings() {
         final CustomConsole customConsole = ConsoleFactory.getInstance();

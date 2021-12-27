@@ -2,8 +2,7 @@ package passwords.gui;
 
 import commons.lib.extra.gui.Positioner;
 import commons.lib.extra.server.socket.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import commons.lib.main.os.LogUtils;
 import passwords.communication.shared.message.consumer.CredentialResponseConsumer;
 import passwords.communication.shared.message.pojo.CredentialResponse;
 import passwords.communication.shared.message.pojo.GetCredential;
@@ -23,11 +22,12 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 import static commons.lib.extra.gui.Positioner.DEFAULT_BUTTON_HEIGHT;
 
 public class ClientCredentialDialog extends Dialog {
-    private static final Logger logger = LoggerFactory.getLogger(ClientCredentialDialog.class);
+    private static final Logger logger = LogUtils.initLogs();
     private final Positioner positioner = new Positioner();
 
     public ClientCredentialDialog(Frame owner) {
@@ -68,14 +68,14 @@ public class ClientCredentialDialog extends Dialog {
                 client.connectSendClose(getCredentialBytes);
                 server.listen();
             } catch (IOException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
-                logger.error(e.getMessage(), e);
+                logger.throwing("ClientCredentialDialog", "ClientCredentialDialog",  e);
             }
             try {
                 CredentialDatum credentialDatum = completableFuture.get();
                 TextArea result = positioner.getComponentByName("result", TextArea.class);
                 result.setText(credentialDatum.getLogin() + "\n" + credentialDatum.getPassword());
             } catch (InterruptedException | ExecutionException e) {
-                logger.error(e.getLocalizedMessage(), e);
+                logger.throwing("ClientCredentialDialog", "ClientCredentialDialog",  e);
             }
         });
 

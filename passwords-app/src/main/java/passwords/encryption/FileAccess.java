@@ -2,8 +2,6 @@ package passwords.encryption;
 
 import commons.lib.main.FileUtils;
 import commons.lib.main.os.LogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import passwords.pojo.CredentialDatum;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;

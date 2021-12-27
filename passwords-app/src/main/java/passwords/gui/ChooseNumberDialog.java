@@ -2,8 +2,6 @@ package passwords.gui;
 
 import commons.lib.extra.gui.Positioner;
 import commons.lib.main.os.LogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import passwords.expectation.Expectation;
 import passwords.expectation.KeysExist;
 import passwords.settings.CredentialsSettings;
@@ -17,10 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
 public class ChooseNumberDialog extends Dialog {
 
-    private final Logger logger = LoggerFactory.getLogger(ChooseNumberDialog.class);
+    private final Logger logger = LogUtils.initLogs();
     private final static Expectation[] expectations = {
             new KeysExist()
     };

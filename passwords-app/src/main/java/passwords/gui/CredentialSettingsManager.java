@@ -5,8 +5,6 @@ import commons.lib.extra.security.asymetric.PrivateKeyHandler;
 import commons.lib.extra.security.asymetric.PublicKeyHandler;
 import commons.lib.main.UnrecoverableException;
 import commons.lib.main.os.LogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import passwords.settings.CredentialsSettings;
 import passwords.settings.InputParameters;
 
@@ -20,9 +18,10 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CredentialSettingsManager {
-    private final Logger logger = LoggerFactory.getLogger(CredentialSettingsManager.class);
+    private final Logger logger = LogUtils.initLogs();
 
     public CredentialsSettings getCredentialsSettings(Path pkPath, List<String> pwds, List<Integer> numbers) {
         LogUtils.debug("Building credentials settings with {} passwords and {} public keys", pwds.size(), numbers.size());
@@ -43,7 +42,7 @@ public class CredentialSettingsManager {
                     final PublicKey rsa = publicKeyHandler.load(entry.toAbsolutePath().toString(), AsymmetricKeyHandler.ASYMMETRIC_ALGORITHM);
                     publicKeys.add(rsa);
                 } else {
-                    logger.warn("Unexpected file extension : {}", extension);
+                    logger.warning("Unexpected file extension : " + extension);
                 }
                 LogUtils.debug("File {} found.", fileName);
             }
@@ -51,7 +50,7 @@ public class CredentialSettingsManager {
             // IOException can never be thrown by the iteration.
             // In this snippet, it can // only be thrown by newDirectoryStream.
             final String s = "Error while generating credentials settings.";
-            logger.error(s, x);
+            logger.throwing("CredentialSettingsManager", "getCredentialsSettings", x);
             throw new UnrecoverableException(s,
                     new String[]{
                             "The application crashed.",

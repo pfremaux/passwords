@@ -5,8 +5,6 @@ import commons.lib.extra.gui.AskDialog;
 import commons.lib.extra.gui.Positioner;
 import commons.lib.main.console.v3.init.CliApp;
 import commons.lib.main.os.LogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import passwords.encryption.EncryptionFactory;
 import passwords.encryption.EncryptionService;
 import passwords.expectation.Expectation;
@@ -25,11 +23,12 @@ import java.awt.event.WindowEvent;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static commons.lib.extra.gui.Positioner.*;
 
 public class CredentialsTreeDialogv2 extends Dialog {
-    private static final Logger logger = LoggerFactory.getLogger(CredentialsTreeDialogv2.class);
+    private static final Logger logger = LogUtils.initLogs();
 
     private static final String ADD_LEVEL_BTN_NAME = "addLevelBtn";
     private static final String ADD_NODE_BTN_NAME = "addNodeBtn";

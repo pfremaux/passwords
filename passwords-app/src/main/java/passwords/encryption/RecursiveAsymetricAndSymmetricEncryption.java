@@ -7,8 +7,6 @@ import commons.lib.extra.security.symetric.SymmetricHandler;
 import commons.lib.main.UnrecoverableException;
 import commons.lib.main.filestructure.StructuredFile;
 import commons.lib.main.os.LogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import passwords.StructuredFileHelper;
 import passwords.encryption.annotation.EncryptionVersion;
 import passwords.pojo.CredentialDatum;

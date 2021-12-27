@@ -8,8 +8,6 @@ import commons.lib.main.UnrecoverableException;
 import commons.lib.main.filestructure.Hexa;
 import commons.lib.main.filestructure.StructuredFile;
 import commons.lib.main.os.LogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import passwords.StructuredFileHelper;
 import passwords.encryption.annotation.EncryptionVersion;
 import passwords.pojo.CredentialDatum;
@@ -32,10 +30,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @EncryptionVersion(version = 5)
 public final class RecursiveAsymetricAndSymmetricEncryption2 implements EncryptionService {
-    private final Logger logger = LoggerFactory.getLogger(RecursiveAsymetricAndSymmetricEncryption2.class);
+    private final Logger logger = LogUtils.initLogs();
 
 
     @Override

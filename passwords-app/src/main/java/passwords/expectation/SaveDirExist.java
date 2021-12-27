@@ -1,13 +1,13 @@
 package passwords.expectation;
 
 import commons.lib.main.os.LogUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import passwords.settings.InputParameters;
+
+import java.util.logging.Logger;
 
 public class SaveDirExist implements Expectation {
 
-    private final Logger logger = LoggerFactory.getLogger(SaveDirExist.class);
+    private final Logger logger = LogUtils.initLogs();
 
     @Override
     public boolean initiative() {
